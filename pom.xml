@@ -7,17 +7,17 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.2</version>
+    <version>2.7.7</version>
   </parent>
 
-  <groupId>com.rtim.zoo</groupId>
-  <artifactId>zoo</artifactId>
-  <version>0.0.1</version>
-  <name>zoo</name>
+  <groupId>com.manager.animallist</groupId>
+  <artifactId>animal-list-management-service</artifactId>
+  <version>0.0.2</version>
+  <name>animal-list-management-service</name>
 
   <properties>
-    <java.version>16</java.version>
-    <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+    <java.version>17</java.version>
+    <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
   </properties>
 
   <dependencies>
