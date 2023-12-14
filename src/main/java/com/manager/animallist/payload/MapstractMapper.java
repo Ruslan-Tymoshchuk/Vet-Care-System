@@ -1,4 +1,4 @@
-package com.manager.animallist.dto;
+package com.manager.animallist.payload;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

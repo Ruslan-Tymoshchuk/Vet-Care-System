@@ -1,6 +1,6 @@
 package com.manager.animallist.service;
 
-import com.manager.animallist.dto.PersonDto;
+import com.manager.animallist.payload.PersonDto;
 
 public interface UserService {
 

@@ -2,7 +2,7 @@ package com.manager.animallist.service;
 
 import java.util.List;
 
-import com.manager.animallist.dto.AnimalDto;
+import com.manager.animallist.payload.AnimalDto;
 
 public interface AnimalService {
 

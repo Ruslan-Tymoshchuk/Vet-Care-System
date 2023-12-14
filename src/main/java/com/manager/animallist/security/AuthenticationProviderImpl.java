@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.manager.animallist.dto.PersonDto;
+import com.manager.animallist.payload.PersonDto;
 import com.manager.animallist.service.UserService;
 
 @Component

@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.manager.animallist.domain.Animal;
-import com.manager.animallist.dto.AnimalDto;
-import com.manager.animallist.dto.MapstractMapper;
 import com.manager.animallist.exception.AnimalNickNameAlredyExistsException;
 import com.manager.animallist.exception.ResourceNotFoundException;
+import com.manager.animallist.payload.AnimalDto;
+import com.manager.animallist.payload.MapstractMapper;
 import com.manager.animallist.repository.AnimalRepository;
 import com.manager.animallist.service.AnimalService;
 

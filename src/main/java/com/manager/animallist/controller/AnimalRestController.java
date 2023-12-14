@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manager.animallist.controller.assembler.AnimalAssembler;
-import com.manager.animallist.dto.AnimalDto;
+import com.manager.animallist.payload.AnimalDto;
 import com.manager.animallist.service.AnimalService;
 
 @RestController

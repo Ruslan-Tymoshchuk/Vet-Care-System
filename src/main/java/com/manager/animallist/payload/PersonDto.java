@@ -1,4 +1,4 @@
-package com.manager.animallist.dto;
+package com.manager.animallist.payload;
 
 import java.time.LocalDateTime;
 import java.util.List;

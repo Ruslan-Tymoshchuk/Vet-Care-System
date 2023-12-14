@@ -7,7 +7,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import com.manager.animallist.controller.AnimalRestController;
-import com.manager.animallist.dto.AnimalDto;
+import com.manager.animallist.payload.AnimalDto;
 
 @Component
 public class AnimalAssembler implements RepresentationModelAssembler<AnimalDto, EntityModel<AnimalDto>> {

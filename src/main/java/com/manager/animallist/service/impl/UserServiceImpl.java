@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.manager.animallist.domain.Person;
-import com.manager.animallist.dto.MapstractMapper;
-import com.manager.animallist.dto.PersonDto;
 import com.manager.animallist.exception.UsernameAlredyExistsException;
+import com.manager.animallist.payload.MapstractMapper;
+import com.manager.animallist.payload.PersonDto;
 import com.manager.animallist.repository.PeopleRepository;
 import com.manager.animallist.service.UserService;
 
