@@ -1,0 +1,7 @@
+CREATE TABLE animals (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    birth_date DATE,
+    gender VARCHAR NOT NULL,
+    nickname VARCHAR NOT NULL UNIQUE  
+);
