@@ -6,6 +6,17 @@ VALUES ('Emily', 'Smith', 'emily@gmail.com','$2a$12$d1XrgmOS0E30LrNWEjAOF.lKpkc/
        ('Dominique', 'Moore', 'dominique@gmail.com', '$2a$10$yKQrDcmYs5y4.jpicX08BO0JUa/Ef9SmmDjUhDhckwXqLkR9WnIfS', '2022-08-08 05:00:00', true);
        
 --password: test_password
+
+INSERT INTO roles (role_type)
+VALUES ('USER'),
+       ('ADMIN');
+       
+INSERT INTO user_roles (user_id, role_id)
+VALUES (1, 1),
+       (2, 1),
+       (3, 1),
+       (4, 1),
+       (5, 1);
        
 INSERT INTO animals (birth_date, gender, nickname, user_id) 
 VALUES ('2018-07-10', 'FEMALE', 'Tagira', 1), 
