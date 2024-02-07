@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.manager.animallist.payload.AuthenticationRequest;
 import com.manager.animallist.payload.AuthenticationResponse;
 import com.manager.animallist.payload.RegistrationRequest;
+import com.manager.animallist.service.AuthenticationService;
 import com.manager.animallist.service.JwtService;
 import com.manager.animallist.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    private final UserService userService;
     private final JwtService jwtService;
+    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,11 +41,11 @@ public class AuthenticationController {
             HttpServletResponse response) {
         String accessToken = jwtService.generateToken(authenticationRequest.getEmail());
         response.addHeader(HttpHeaders.SET_COOKIE, jwtService.createJwtCookie(accessToken).toString());
-        return userService.login(authenticationRequest);
+        return authenticationService.login(authenticationRequest);
     }
 
     @GetMapping("/logout")
     public void performLogout(HttpServletRequest request) {
-        userService.logout(request);
+        authenticationService.logout(request);
     }
 }
