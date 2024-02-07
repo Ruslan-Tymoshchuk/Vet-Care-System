@@ -1,19 +1,10 @@
 package com.manager.animallist.service;
 
-import com.manager.animallist.payload.PersonDto;
+import com.manager.animallist.payload.AuthenticationResponse;
+import com.manager.animallist.payload.RegistrationRequest;
 
 public interface UserService {
-
-    PersonDto getByName(String name);
     
-    void increaseFailedAttempts(PersonDto personDto);
-    
-    void resetFailedAttempts(String name);
-    
-    void lock(PersonDto personDto);
-    
-    boolean unlockWhenTimeExpired(PersonDto personDto);
-    
-    PersonDto registerNewPerson(PersonDto personDto);
+    AuthenticationResponse saveNewUser(RegistrationRequest registerRequest);
     
 }

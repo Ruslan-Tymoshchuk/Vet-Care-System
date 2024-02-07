@@ -1,82 +1,54 @@
 package com.manager.animallist.service.impl;
 
 import static java.time.LocalDateTime.now;
-import static java.time.Duration.between;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.manager.animallist.domain.Person;
-import com.manager.animallist.exception.UsernameAlredyExistsException;
-import com.manager.animallist.payload.MapstractMapper;
-import com.manager.animallist.payload.PersonDto;
-import com.manager.animallist.repository.PeopleRepository;
+import com.manager.animallist.domain.DUser;
+import com.manager.animallist.payload.AuthenticationResponse;
+import com.manager.animallist.payload.RegistrationRequest;
+import com.manager.animallist.repository.UserRepository;
+import com.manager.animallist.service.RoleService;
 import com.manager.animallist.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
-    @Value("${lock.time.duration}")
-    private int lockTimeDuration;
-    private final PeopleRepository peopleRepository;
-    private final MapstractMapper personMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
    
-    public UserServiceImpl(PeopleRepository peopleRepository, MapstractMapper personMapper, PasswordEncoder passwordEncoder) {
-        this.peopleRepository = peopleRepository;
-        this.personMapper = personMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
-    
-    public PersonDto getByName(String name) throws UsernameNotFoundException {
-        return personMapper.personToPersonDto(peopleRepository.findByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+    @Override
+    @Transactional
+    public AuthenticationResponse saveNewUser(RegistrationRequest registrationRequest) {          
+        DUser user = userRepository
+                .save(DUser.builder()
+                .firstName(registrationRequest.getFirstName())
+                .lastName(registrationRequest.getLastName())
+                .email(registrationRequest.getEmail())
+                .password(registrationRequest.getPassword())
+                .roles(roleService.getByRoleNames(registrationRequest.getRoleNames()))
+                .accountNonLocked(true)
+                .dtLogin(now())
+                .build());
+        return AuthenticationResponse
+                .builder()
+                .email(user.getEmail())
+                .roles(user.getRoles().stream().map(role -> role.getRoleType().toString()).collect(Collectors.toSet()))
+                .build(); 
     }
 
-    @Transactional
-    public void increaseFailedAttempts(PersonDto personDto) {
-        int newFailAttempts = personDto.getFailedAttempt() + 1;
-        peopleRepository.updateFailedAttempts(newFailAttempts, personDto.getName());
-    }
-     
-    @Transactional
-    public void resetFailedAttempts(String name) {
-        peopleRepository.updateFailedAttempts(0, name);
-    }
-     
-    @Transactional
-    public void lock(PersonDto personDto) {
-        personDto.setAccountNonLocked(false);
-        personDto.setLockTime(now());
-        peopleRepository.save(personMapper.personDtoToPerson(personDto));
-    }
-
-    @Transactional
-    public boolean unlockWhenTimeExpired(PersonDto personDto) {
-        if (personDto.getLockTime() == null) {
-            return true;
-        } else if (between(personDto.getLockTime(), now()).toSeconds() >= lockTimeDuration) {
-            personDto.setAccountNonLocked(true);
-            personDto.setLockTime(null);
-            personDto.setFailedAttempt(0);
-            peopleRepository.save(personMapper.personDtoToPerson(personDto));
-            return true;
-        } else {
-            return false;
-        }
-    }
-             
-    @Transactional
-    public PersonDto registerNewPerson(PersonDto personDto) {
-        if (!peopleRepository.existsByName(personDto.getName())) {
-            Person person = personMapper.personDtoToPerson(personDto);
-            person.setPassword(passwordEncoder.encode(personDto.getPassword()));
-            return personMapper.personToPersonDto(peopleRepository.save(person));
-        } else {
-            throw new UsernameAlredyExistsException("User with that name already exists");
-        }
+    @Override
+    public UserDetails loadUserByUsername(String email) {
+        DUser user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        return new User(user.getEmail(), user.getPassword(), true, true, true, user.isAccountNonLocked(), 
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().name())).toList());
     }
 }
