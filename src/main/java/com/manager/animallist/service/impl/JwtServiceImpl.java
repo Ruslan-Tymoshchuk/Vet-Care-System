@@ -24,7 +24,7 @@ import static io.jsonwebtoken.security.Keys.*;
 @Component
 public class JwtServiceImpl implements JwtService {
 
-    private static final Key secretKey = secretKeyFor(SignatureAlgorithm.HS256);
+    public static final Key SECRET_KEY = secretKeyFor(SignatureAlgorithm.HS256);
     
     @Value("${jwt.cookies.valid.time}")
     private Integer jwtCookiesValidTime;
@@ -40,9 +40,12 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(String userEmail) {
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder().setClaims(claims).setSubject(userEmail)
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userEmail)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidTime)).signWith(secretKey)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidTime))
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
@@ -75,7 +78,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Claims getAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
     
     private Boolean isTokenExpired(String token) {
