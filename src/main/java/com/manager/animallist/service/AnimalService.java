@@ -1,20 +1,20 @@
 package com.manager.animallist.service;
 
 import java.util.List;
-
-import com.manager.animallist.payload.AnimalDto;
+import com.manager.animallist.payload.AnimalDetailsRequest;
+import com.manager.animallist.payload.AnimalDetailsResponse;
 
 public interface AnimalService {
 
-    List<AnimalDto> findAllAnimals();
+    List<AnimalDetailsResponse> findAllAnimals();
     
-    List<AnimalDto> findAllAnimalsByUserId(Integer userId);
+    List<AnimalDetailsResponse> findAllAnimalsByUser(String userEmail);
     
-    AnimalDto createAnimal(AnimalDto animalDto);
+    AnimalDetailsResponse createAnimal(AnimalDetailsRequest newAnimal, String userEmail);
     
-    AnimalDto getAnimalById(Integer id);
+    AnimalDetailsResponse getAnimalById(Integer id);
     
-    void updateAnimal(AnimalDto animalDto);
+    void updateAnimal(AnimalDetailsRequest animalDetailsRequest, Integer animalId, String userEmail);
     
     void deleteAnimalById(Integer id);
 
