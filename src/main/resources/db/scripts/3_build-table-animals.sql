@@ -3,5 +3,5 @@ CREATE TABLE animals (
     user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
     birth_date DATE,
     gender VARCHAR NOT NULL,
-    nickname VARCHAR NOT NULL UNIQUE  
+    nickname VARCHAR NOT NULL  
 );

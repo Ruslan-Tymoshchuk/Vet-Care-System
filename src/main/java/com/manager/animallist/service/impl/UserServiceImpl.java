@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.manager.animallist.domain.Animal;
 import com.manager.animallist.domain.DUser;
 import com.manager.animallist.payload.AuthenticationResponse;
 import com.manager.animallist.payload.RegistrationRequest;
@@ -48,7 +50,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         DUser user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
-        return new User(user.getEmail(), user.getPassword(), true, true, true, user.isAccountNonLocked(), 
+        return new User(user.getEmail(), user.getPassword(), true, true, true, user.isAccountNonLocked(),
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().name())).toList());
+    }
+
+    @Override
+    public void assignUser(Animal animal, String userEmail) {
+        animal.setUser(userRepository.findByEmail(userEmail).orElseThrow(NoSuchElementException::new));
     }
 }

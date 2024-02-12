@@ -40,10 +40,4 @@ public class ExceptionHandlerAdvice {
     public ApiError handleExceptionUsernameLocked(LockedException exception) {
         return new ApiError(HttpStatus.LOCKED, exception);
     }
-
-    @ExceptionHandler(AnimalNickNameAlredyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleExceptionAnimalNickNameAlredyExists(AnimalNickNameAlredyExistsException exception) {
-        return new ApiError(HttpStatus.CONFLICT, exception);
-    }
 }

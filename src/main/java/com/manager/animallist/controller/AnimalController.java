@@ -53,7 +53,7 @@ public class AnimalController {
     }
 
     @Secured({ "ADMIN", "USER" })
-    @PostMapping("/save")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<AnimalDetailsResponse> saveNewAnimal(@RequestBody AnimalDetailsRequest animalDetailsRequest,
             @AuthenticationPrincipal(expression = "username") String userEmail) {

@@ -4,13 +4,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.manager.animallist.domain.Animal;
-import com.manager.animallist.exception.AnimalNickNameAlredyExistsException;
 import com.manager.animallist.exception.ResourceNotFoundException;
 import com.manager.animallist.payload.AnimalDetailsRequest;
 import com.manager.animallist.payload.AnimalDetailsResponse;
 import com.manager.animallist.payload.mapstruct.AnimalMapper;
 import com.manager.animallist.repository.AnimalRepository;
 import com.manager.animallist.service.AnimalService;
+import com.manager.animallist.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,8 +18,9 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class AnimalServiceImpl implements AnimalService {
 
-    private final AnimalRepository animalRepository;
+    private final UserService userService;
     private final AnimalMapper animalMapper;
+    private final AnimalRepository animalRepository;
 
     @Override
     public List<AnimalDetailsResponse> findAllAnimals() {
@@ -34,12 +35,9 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional
     public AnimalDetailsResponse createAnimal(AnimalDetailsRequest animalDetails, String userEmail) {
-        if (!animalRepository.existsByNickName(animalDetails.getNickName())) {
             Animal animal = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
+            userService.assignUser(animal, userEmail);
             return animalMapper.animalToAnimalDetailsResponse(animal);
-        } else {
-            throw new AnimalNickNameAlredyExistsException("Animal with that nickname already exists");
-        }
     }
 
     @Override
@@ -50,13 +48,9 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     @Transactional
-    public void updateAnimal(AnimalDetailsRequest animalDetails, Integer animalId, String userEmail) {
-        if (!animalRepository.existsByNickName(animalDetails.getNickName())) {
-            Animal animal = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
-            animalMapper.animalToAnimalDetailsResponse(animal);
-        } else {
-            throw new AnimalNickNameAlredyExistsException("Animal with that nickname already exists");
-        }
+    public AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetails, Integer animalId, String userEmail) {
+        return animalMapper.animalToAnimalDetailsResponse(
+                animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails)));
     }
 
     @Override
