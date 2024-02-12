@@ -52,7 +52,7 @@ public class AnimalController {
         return animalAssembler.toModel(animalService.getAnimalById(id));
     }
 
-    @Secured({ "ADMIN", "USER" })
+    @Secured({ "USER" })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<AnimalDetailsResponse> saveNewAnimal(@RequestBody AnimalDetailsRequest animalDetailsRequest,
@@ -60,11 +60,12 @@ public class AnimalController {
         return animalAssembler.toModel(animalService.createAnimal(animalDetailsRequest, userEmail));
     }
 
-    @Secured({ "ADMIN", "USER" })
-    @PatchMapping("/update/{id}")
+    @Secured({ "USER" })
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAnimal(@AuthenticationPrincipal(expression = "username") String userEmail,
-            @PathVariable("id") Integer animalId, @RequestBody AnimalDetailsRequest animalDetailsRequest) {
+    public void updateAnimal(@PathVariable("id") Integer animalId,
+            @RequestBody AnimalDetailsRequest animalDetailsRequest,
+            @AuthenticationPrincipal(expression = "username") String userEmail) {
         animalService.updateAnimal(animalDetailsRequest, animalId, userEmail);
     }
 

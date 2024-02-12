@@ -12,4 +12,6 @@ public interface AnimalMapper {
 
     Animal animalDetailsToAnimal(AnimalDetailsRequest animalDetails);
     
+    Animal animalDetailsToAnimal(AnimalDetailsRequest animalDetails, Integer id);
+    
 }

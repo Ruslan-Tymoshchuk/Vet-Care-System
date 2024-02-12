@@ -29,15 +29,16 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public List<AnimalDetailsResponse> findAllAnimalsByUser(String userEmail) {
-        return animalRepository.findByUser(userEmail).stream().map(animalMapper::animalToAnimalDetailsResponse).toList();
+        return animalRepository.findByUser(userEmail).stream().map(animalMapper::animalToAnimalDetailsResponse)
+                .toList();
     }
 
     @Override
     @Transactional
     public AnimalDetailsResponse createAnimal(AnimalDetailsRequest animalDetails, String userEmail) {
-            Animal animal = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
-            userService.assignUser(animal, userEmail);
-            return animalMapper.animalToAnimalDetailsResponse(animal);
+        Animal animal = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
+        userService.assignUser(animal, userEmail);
+        return animalMapper.animalToAnimalDetailsResponse(animal);
     }
 
     @Override
@@ -49,8 +50,9 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional
     public AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetails, Integer animalId, String userEmail) {
-        return animalMapper.animalToAnimalDetailsResponse(
-                animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails)));
+        Animal animal = animalMapper.animalDetailsToAnimal(animalDetails, animalId);
+        userService.assignUser(animal, userEmail);
+        return animalMapper.animalToAnimalDetailsResponse(animalRepository.save(animal));
     }
 
     @Override

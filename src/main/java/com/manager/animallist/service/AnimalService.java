@@ -14,7 +14,7 @@ public interface AnimalService {
     
     AnimalDetailsResponse getAnimalById(Integer id);
     
-    AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetailsRequest, Integer animalId, String userEmail);
+    AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetailsRequest, Integer animalId,  String userEmail);
     
     void deleteAnimalById(Integer id);
 
