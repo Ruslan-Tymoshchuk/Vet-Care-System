@@ -40,11 +40,10 @@ public class AnimalController {
 
     @Secured({ "USER" })
     @GetMapping("/my_animals")
-    public CollectionModel<EntityModel<AnimalDetailsResponse>> getAnimalsByUser(
-            @AuthenticationPrincipal(expression = "username") String userEmail) {
-        List<EntityModel<AnimalDetailsResponse>> animals = animalService.findAllAnimalsByUser(userEmail).stream()
+    public List<EntityModel<AnimalDetailsResponse>> getAnimalsByUser(
+            @AuthenticationPrincipal(expression = "username") String userEmail) { 
+        return animalService.findAllAnimalsByUser(userEmail).stream()
                 .map(animalAssembler::toModel).toList();
-        return CollectionModel.of(animals, linkTo(AnimalController.class).withSelfRel());
     }
 
     @Secured({ "ADMIN", "USER" })
@@ -70,7 +69,7 @@ public class AnimalController {
     }
 
     @Secured({ "ADMIN", "USER" })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAnimalById(@PathVariable("id") Integer id) {
         animalService.deleteAnimalById(id);
