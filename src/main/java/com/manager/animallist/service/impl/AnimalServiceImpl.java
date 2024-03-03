@@ -1,10 +1,10 @@
 package com.manager.animallist.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.manager.animallist.domain.Animal;
-import com.manager.animallist.exception.ResourceNotFoundException;
 import com.manager.animallist.payload.AnimalDetailsRequest;
 import com.manager.animallist.payload.AnimalDetailsResponse;
 import com.manager.animallist.payload.mapstruct.AnimalMapper;
@@ -44,7 +44,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public AnimalDetailsResponse getAnimalById(Integer id) {
         return animalMapper.animalToAnimalDetailsResponse(animalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find animal with id: ", id)));
+                .orElseThrow(() -> new NoSuchElementException("Could not find animal with id: " + id)));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class AnimalServiceImpl implements AnimalService {
         if (animalRepository.existsById(id)) {
             animalRepository.deleteById(id);
         } else {
-            throw new ResourceNotFoundException("Could not find animal with id: ", id);
+            throw new NoSuchElementException("Could not find animal with id: " + id);
         }
     }
 }
