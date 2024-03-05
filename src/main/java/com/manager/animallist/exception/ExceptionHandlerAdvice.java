@@ -1,5 +1,6 @@
 package com.manager.animallist.exception;
 
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,5 +37,11 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.LOCKED)
     public ApiError handleExceptionUsernameLocked(LockedException exception) {
         return new ApiError(HttpStatus.LOCKED, exception);
+    }
+    
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ApiError handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception) {
+        return new ApiError(HttpStatus.NOT_ACCEPTABLE, exception);
     }
 }
