@@ -1,13 +1,12 @@
 package com.manager.animallist.exception;
 
+import static java.time.LocalDateTime.*;
+import static org.springframework.http.HttpStatus.*;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.util.NoSuchElementException;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,32 +15,33 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleExceptionUsernameNotFound(UsernameNotFoundException exception) {
-        return new ApiError(HttpStatus.NOT_FOUND, exception);
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionHandlerResponse handleExceptionUsernameNotFound(UsernameNotFoundException exception) {
+        return new ExceptionHandlerResponse(now(), NOT_FOUND.value(), NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleExceptionResourceNotFound(NoSuchElementException exception) {
-        return new ApiError(HttpStatus.NOT_FOUND, exception);
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionHandlerResponse handleExceptionResourceNotFound(NoSuchElementException exception) {
+        return new ExceptionHandlerResponse(now(), NOT_FOUND.value(), NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiError handleExceptionUsernameBadCredentials(BadCredentialsException exception) {
-        return new ApiError(HttpStatus.UNAUTHORIZED, exception);
+    @ResponseStatus(UNAUTHORIZED)
+    public ExceptionHandlerResponse handleExceptionUsernameBadCredentials(BadCredentialsException exception) {
+        return new ExceptionHandlerResponse(now(), UNAUTHORIZED.value(), UNAUTHORIZED, exception.getMessage());
     }
 
     @ExceptionHandler(LockedException.class)
-    @ResponseStatus(HttpStatus.LOCKED)
-    public ApiError handleExceptionUsernameLocked(LockedException exception) {
-        return new ApiError(HttpStatus.LOCKED, exception);
+    @ResponseStatus(LOCKED)
+    public ExceptionHandlerResponse handleExceptionUsernameLocked(LockedException exception) {
+        return new ExceptionHandlerResponse(now(), LOCKED.value(), LOCKED, exception.getMessage());
     }
-    
+
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ApiError handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception) {
-        return new ApiError(HttpStatus.NOT_ACCEPTABLE, exception);
+    @ResponseStatus(NOT_ACCEPTABLE)
+    public ExceptionHandlerResponse handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException exception) {
+        return new ExceptionHandlerResponse(now(), NOT_ACCEPTABLE.value(), NOT_ACCEPTABLE, exception.getMessage());
     }
 }
