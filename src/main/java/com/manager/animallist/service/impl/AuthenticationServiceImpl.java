@@ -27,14 +27,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    public static final String USER_IS_DOES_NOT_EXISTS = "The user with email: %s is doesn't exists.";
+    public static final String ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS = "Your account has been locked due to %d failed attempts. "
+            + "It will be unlocked after %d minutes.";
+    public static final String INCORRECT_PASSWORD = "Incorrect password! You taken %s attempts";
+    public static final String ACCOUNT_HAS_BEEN_LOCKED = "Your account has been locked";
+
     @Value("${lock.duration.minutes}")
     private int lockDurationMinutes;
-    @Value("${max.filed.attempts}")
-    private int maxFiledAttempts;
+    @Value("${max.failed.attempts}")
+    private int maxFailedAttempts;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final Map<String, Integer> filedAttempts = new HashMap<>();
+    private final Map<String, Integer> failedAttempts = new HashMap<>();
     private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();
 
     @Override
@@ -42,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
         DUser user = userRepository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new NoSuchElementException(
-                        "The user with email: " + authenticationRequest.getEmail() + " is doesn't exists."));
+                        String.format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
         validateAuthenticationRequest(authenticationRequest, user);
         user.setDtLogin(now());
         return AuthenticationResponse.builder().email(user.getEmail())
@@ -60,23 +66,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {
         if (user.isAccountNonLocked()) {
             if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
-                throw new LockedException("Your account has been locked due to " + maxFiledAttempts
-                        + " failed attempts. It will be unlocked after "
-                        + MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60 + " minutes.");
+                throw new LockedException(String.format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
+                        maxFailedAttempts, MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
             }
             if (!passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
-                int actualFailedAttempts = filedAttempts.merge(user.getEmail(), 1, Integer::sum);
-                if (filedAttempts.get(user.getEmail()) == maxFiledAttempts) {
+                int actualFailedAttempts = failedAttempts.merge(user.getEmail(), 1, Integer::sum);
+                if (failedAttempts.get(user.getEmail()) == maxFailedAttempts) {
                     accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
-                    filedAttempts.put(user.getEmail(), 0);
+                    failedAttempts.put(user.getEmail(), 0);
                 }
-                throw new BadCredentialsException(
-                        "Incorrect password! You taken " + actualFailedAttempts + " attempts");
+                throw new BadCredentialsException(String.format(INCORRECT_PASSWORD, actualFailedAttempts));
             } else {
-                filedAttempts.put(user.getEmail(), 0);
+                failedAttempts.put(user.getEmail(), 0);
             }
         } else {
-            throw new LockedException("Your account has been locked");
+            throw new LockedException(ACCOUNT_HAS_BEEN_LOCKED);
         }
     }
 }
