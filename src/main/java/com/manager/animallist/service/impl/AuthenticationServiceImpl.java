@@ -41,21 +41,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
         DUser user = userRepository.findByEmail(authenticationRequest.getEmail())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(
+                        "The user with email: " + authenticationRequest.getEmail() + " is doesn't exists."));
         validateAuthenticationRequest(authenticationRequest, user);
         user.setDtLogin(now());
         return AuthenticationResponse.builder().email(user.getEmail())
                 .roles(user.getRoles().stream().map(role -> role.getRoleType().name()).collect(Collectors.toSet()))
                 .build();
     }
-    
+
     @Override
     public void logout(HttpServletRequest request) {
         String requestTokenHeader = request.getHeader(AUTHORIZATION);
         String jwtToken = requestTokenHeader.substring(7);
         jwtService.addTokenToBlacklist(jwtToken);
-    } 
-    
+    }
+
     private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {
         if (user.isAccountNonLocked()) {
             if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {

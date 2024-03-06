@@ -7,9 +7,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.manager.animallist.domain.Animal;
 import com.manager.animallist.domain.DUser;
 import com.manager.animallist.payload.AuthenticationResponse;
@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
    
     @Override
     @Transactional
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .firstName(registrationRequest.getFirstName())
                 .lastName(registrationRequest.getLastName())
                 .email(registrationRequest.getEmail())
-                .password(registrationRequest.getPassword())
+                .password(passwordEncoder.encode(registrationRequest.getPassword()))
                 .roles(roleService.getByRoleNames(registrationRequest.getRoleNames()))
                 .accountNonLocked(true)
                 .dtLogin(now())
