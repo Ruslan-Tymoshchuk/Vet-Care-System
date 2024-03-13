@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static java.util.UUID.randomUUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
+    @Value("${access.token.valid.time}")
+    private Integer accessTokenValidTime;
+    @Value("${refresh.token.valid.time}")
+    private Integer refreshTokenValidTime;
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
@@ -60,8 +65,8 @@ public class AuthenticationController {
     }
 
     private void addUserJwtCookies(HttpServletResponse response, String userEmail) {
-        response.addHeader(SET_COOKIE, jwtService.createJwtCookie(ACCESS_TOKEN, jwtService.generateToken(userEmail)));
+        response.addHeader(SET_COOKIE, jwtService.createJwtCookie(ACCESS_TOKEN, jwtService.generateToken(userEmail, accessTokenValidTime)));
         response.addHeader(SET_COOKIE,
-                jwtService.createJwtCookie(REFRESH_TOKEN, jwtService.generateToken(randomUUID().toString())));
+                jwtService.createJwtCookie(REFRESH_TOKEN, jwtService.generateToken(randomUUID().toString(), refreshTokenValidTime)));
     }
 }

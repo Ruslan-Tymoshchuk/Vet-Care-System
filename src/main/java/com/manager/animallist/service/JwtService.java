@@ -6,7 +6,7 @@ public interface JwtService {
 
     String extractUserEmail(String token);
     
-    String generateToken(String userEmail);
+    String generateToken(String userEmail, Integer validTime);
     
     boolean validate(String token, UserDetails userDetails);
     

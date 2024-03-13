@@ -31,8 +31,6 @@ public class JwtServiceImpl implements JwtService {
     
     @Value("${jwt.cookies.valid.time}")
     private Integer jwtCookiesValidTime;
-    @Value("${jwt.token.valid.time}")
-    private Integer jwtTokenValidTime;
     private final List<String> tokenBlackList = new ArrayList<>();
 
     @Override
@@ -41,13 +39,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(String userEmail) {
+    public String generateToken(String userEmail, Integer validTime) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userEmail)
                 .setIssuedAt(new Date(currentTimeMillis()))
-                .setExpiration(new Date(currentTimeMillis() + jwtTokenValidTime))
+                .setExpiration(new Date(currentTimeMillis() + validTime))
                 .signWith(SECRET_KEY)
                 .compact();
     }
