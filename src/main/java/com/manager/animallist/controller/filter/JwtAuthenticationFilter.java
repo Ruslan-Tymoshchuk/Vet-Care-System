@@ -1,7 +1,8 @@
 package com.manager.animallist.controller.filter;
 
-import static  org.springframework.web.util.WebUtils.getCookie;
-import static  org.springframework.util.StringUtils.startsWithIgnoreCase;
+import static org.springframework.web.util.WebUtils.getCookie;
+import static org.springframework.util.StringUtils.startsWithIgnoreCase;
+import static com.manager.animallist.payload.JWTMarkers.*;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,24 +30,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        Cookie accessToken = getCookie(request, "Access-token");
-        if (accessToken!= null && startsWithIgnoreCase(accessToken.getValue(), "Bearer")) {
-                final String jwtToken = accessToken.getValue().substring(7);
-                if (!jwtService.isTokenInBlackList(jwtToken)){
-                    final String userEmail = jwtService.extractUserEmail(jwtToken);   
-                    if (!userEmail.isBlank() && SecurityContextHolder.getContext().getAuthentication() != null) {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                        if (jwtService.validate(jwtToken, userDetails)) {
-                            UsernamePasswordAuthenticationToken authenticationToken =
-                                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        }
+        Cookie accessToken = getCookie(request, ACCESS_TOKEN);
+        if (accessToken != null && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)) {
+            final String jwtToken = accessToken.getValue().substring(7);
+            if (!jwtService.isTokenInBlackList(jwtToken)) {
+                final String userEmail = jwtService.extractUserEmail(jwtToken);
+                if (!userEmail.isBlank() && SecurityContextHolder.getContext().getAuthentication() != null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                    if (jwtService.validate(jwtToken, userDetails)) {
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
-                } else {
-                    return;
-                }  
+                }
+            } else {
+                return;
+            }
         }
-            filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }

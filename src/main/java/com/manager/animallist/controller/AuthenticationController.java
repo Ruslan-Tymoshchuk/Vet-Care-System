@@ -1,10 +1,11 @@
 package com.manager.animallist.controller;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static com.manager.animallist.payload.JWTMarkers.*;
+import static org.springframework.http.HttpStatus.CREATED;
 import static java.util.UUID.randomUUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +28,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    public static final String ACCESS_TOKEN = "Access-token";
-    public static final String REFRESH_TOKEN = "Refresh-token";
-
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
     private final UsernameValidator usernameValidator;
 
     @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public AuthenticationResponse performRegistration(@RequestBody RegistrationRequest registrationRequest,
             HttpServletResponse response) {
         addUserJwtCookies(response, registrationRequest.getEmail());
