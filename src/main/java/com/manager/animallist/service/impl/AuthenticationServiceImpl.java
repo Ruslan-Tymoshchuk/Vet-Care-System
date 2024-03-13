@@ -3,6 +3,7 @@ package com.manager.animallist.service.impl;
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static java.lang.String.format;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +47,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
-        DUser user = userRepository.findByEmail(authenticationRequest.getEmail())
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
+        DUser user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow(
+                () -> new NoSuchElementException(format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
         validateAuthenticationRequest(authenticationRequest, user);
         user.setDtLogin(now());
         return AuthenticationResponse.builder().email(user.getEmail())
@@ -66,7 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {
         if (user.isAccountNonLocked()) {
             if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
-                throw new LockedException(String.format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
+                throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
                         maxFailedAttempts, MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
             }
             if (!passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
@@ -75,7 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
                     failedAttempts.put(user.getEmail(), 0);
                 }
-                throw new BadCredentialsException(String.format(INCORRECT_PASSWORD, actualFailedAttempts));
+                throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
             } else {
                 failedAttempts.put(user.getEmail(), 0);
             }
