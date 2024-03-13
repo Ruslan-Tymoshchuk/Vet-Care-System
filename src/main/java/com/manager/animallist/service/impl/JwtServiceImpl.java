@@ -1,5 +1,8 @@
 package com.manager.animallist.service.impl;
 
+import static java.lang.System.*;
+import static java.net.URLDecoder.decode;
+import static java.net.URLEncoder.encode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,8 +11,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import com.manager.animallist.service.JwtService;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static io.jsonwebtoken.security.Keys.*;
 
 @Component
@@ -43,23 +43,23 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userEmail)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidTime))
+                .setIssuedAt(new Date(currentTimeMillis()))
+                .setExpiration(new Date(currentTimeMillis() + jwtTokenValidTime))
                 .signWith(SECRET_KEY)
                 .compact();
     }
 
     @Override
     public boolean validate(String token, UserDetails userDetails) {
-        String convertedToken = URLDecoder.decode(token, StandardCharsets.UTF_8);
+        String convertedToken = decode(token, StandardCharsets.UTF_8);
         final String username = extractUserEmail(convertedToken);
         return username.equals(userDetails.getUsername()) && !this.isTokenExpired(convertedToken);
     }
 
     @Override
-    public ResponseCookie createJwtCookie(String token) {
-        return ResponseCookie.from(AUTHORIZATION, URLEncoder.encode("Bearer " + token, StandardCharsets.UTF_8))
-                .maxAge(jwtCookiesValidTime).httpOnly(true).build();
+    public String createJwtCookie(String tokenType, String token) {
+        return ResponseCookie.from(tokenType, encode("Bearer " + token, StandardCharsets.UTF_8))
+                .maxAge(jwtCookiesValidTime).httpOnly(true).build().toString();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.manager.animallist.service;
 
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {
@@ -11,7 +10,7 @@ public interface JwtService {
     
     boolean validate(String token, UserDetails userDetails);
     
-    ResponseCookie createJwtCookie(String token);
+    String createJwtCookie(String tokenType, String token);
     
     boolean isTokenInBlackList(String token);
     

@@ -1,8 +1,9 @@
 package com.manager.animallist.controller;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static java.util.UUID.randomUUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
+    public static final String ACCESS_TOKEN = "Access-token";
+    public static final String REFRESH_TOKEN = "Refresh-token";
+
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
@@ -35,16 +39,14 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthenticationResponse performRegistration(@RequestBody RegistrationRequest registrationRequest,
             HttpServletResponse response) {
-        String accessToken = jwtService.generateToken(registrationRequest.getEmail());
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtService.createJwtCookie(accessToken).toString());
+        addUserJwtCookies(response, registrationRequest.getEmail());
         return userService.saveNewUser(registrationRequest);
     }
 
     @PostMapping("/login")
     public AuthenticationResponse performAuthenticate(@RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {
-        String accessToken = jwtService.generateToken(authenticationRequest.getEmail());
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtService.createJwtCookie(accessToken).toString());
+        addUserJwtCookies(response, authenticationRequest.getEmail());
         return authenticationService.login(authenticationRequest);
     }
 
@@ -52,10 +54,16 @@ public class AuthenticationController {
     public void performLogout(HttpServletRequest request) {
         authenticationService.logout(request);
     }
-    
+
     @PostMapping("/validate_email")
     public UserEmailValidationResponse validateUserEmail(
             @RequestBody UserEmailValidationRequest userEmailValidationRequest) {
         return usernameValidator.usernameIsAlreadyTaken(userEmailValidationRequest);
+    }
+
+    private void addUserJwtCookies(HttpServletResponse response, String userEmail) {
+        response.addHeader(SET_COOKIE, jwtService.createJwtCookie(ACCESS_TOKEN, jwtService.generateToken(userEmail)));
+        response.addHeader(SET_COOKIE,
+                jwtService.createJwtCookie(REFRESH_TOKEN, jwtService.generateToken(randomUUID().toString())));
     }
 }
