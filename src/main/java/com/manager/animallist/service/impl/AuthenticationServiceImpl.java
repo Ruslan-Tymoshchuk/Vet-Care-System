@@ -2,13 +2,15 @@ package com.manager.animallist.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.util.WebUtils.getCookie;
+import static com.manager.animallist.payload.JWTMarkers.ACCESS_TOKEN;
 import static java.lang.String.format;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,9 +60,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        String requestTokenHeader = request.getHeader(AUTHORIZATION);
-        String jwtToken = requestTokenHeader.substring(7);
-        jwtService.addTokenToBlacklist(jwtToken);
+        Cookie accessToken = getCookie(request, ACCESS_TOKEN);
+        if(accessToken != null) {
+            jwtService.addTokenToBlacklist(accessToken.getValue());
+        }
     }
 
     private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {

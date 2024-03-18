@@ -10,8 +10,6 @@ public interface JwtService {
     
     boolean validate(String token, UserDetails userDetails);
     
-    String createJwtCookie(String tokenType, String token);
-    
     boolean isTokenInBlackList(String token);
     
     void addTokenToBlacklist(String token);

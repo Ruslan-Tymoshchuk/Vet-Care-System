@@ -1,9 +1,13 @@
 package com.manager.animallist.controller;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 import static com.manager.animallist.payload.JWTMarkers.*;
 import static org.springframework.http.HttpStatus.CREATED;
+import static java.util.Arrays.stream;
+import static java.lang.String.format;
+import static java.net.URLEncoder.encode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.UUID.randomUUID;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +33,15 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    @Value("${access.token.valid.time}")
-    private Integer accessTokenValidTime;
-    @Value("${refresh.token.valid.time}")
-    private Integer refreshTokenValidTime;
+    public static final String JWT_FORMAT = "%s %s";
+    public static final String SPACE_DELIMITER = " ";
+
+    @Value("${access.token.life.time}")
+    private Integer accessTokenLifeTime;
+    @Value("${refresh.token.life.time}")
+    private Integer refreshTokenLifeTime;
+    @Value("${jwt.cookie.life.time}")
+    private Integer jwtCookieLifeTime;
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
@@ -54,7 +63,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    public void performLogout(HttpServletRequest request) {
+    public void performLogout(HttpServletRequest request, HttpServletResponse response) {
+        stream(request.getCookies()).forEach(cookie -> {
+            String cookieName = cookie.getName();
+            Cookie cookieToDelete = buildCookie(cookieName, SPACE_DELIMITER, 0);
+            response.addCookie(cookieToDelete);
+        });
         authenticationService.logout(request);
     }
 
@@ -65,8 +79,20 @@ public class AuthenticationController {
     }
 
     private void addUserJwtCookies(HttpServletResponse response, String userEmail) {
-        response.addHeader(SET_COOKIE, jwtService.createJwtCookie(ACCESS_TOKEN, jwtService.generateToken(userEmail, accessTokenValidTime)));
-        response.addHeader(SET_COOKIE,
-                jwtService.createJwtCookie(REFRESH_TOKEN, jwtService.generateToken(randomUUID().toString(), refreshTokenValidTime)));
+        response.addCookie(buildCookie(ACCESS_TOKEN,
+                format(JWT_FORMAT, BEARER_TOKEN_TYPE, jwtService.generateToken(userEmail, accessTokenLifeTime)),
+                       jwtCookieLifeTime));
+        response.addCookie(
+                buildCookie(REFRESH_TOKEN,
+                format(JWT_FORMAT, BEARER_TOKEN_TYPE,
+                       jwtService.generateToken(randomUUID().toString(), refreshTokenLifeTime)),
+                       jwtCookieLifeTime));
+    }
+
+    private Cookie buildCookie(String cookieName, String cookieValue, Integer cookieLifeTime) {
+        Cookie cookie = new Cookie(cookieName, encode(cookieValue, UTF_8));
+        cookie.setMaxAge(cookieLifeTime);
+        cookie.setHttpOnly(true);
+        return cookie;
     }
 }
