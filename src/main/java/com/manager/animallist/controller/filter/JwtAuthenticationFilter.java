@@ -3,6 +3,7 @@ package com.manager.animallist.controller.filter;
 import static org.springframework.web.util.WebUtils.getCookie;
 import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 import static com.manager.animallist.payload.JWTMarkers.*;
+import static  javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)
                 && startsWithIgnoreCase(refreshToken.getValue(), BEARER_TOKEN_TYPE)) {
             final String jwtAccessToken = accessToken.getValue().substring(7);
-            final String jwtRefreshToken = refreshToken.getValue().substring(7);
+            final String jwtRefreshToken = refreshToken.getValue().substring(7);            
             if (!jwtService.isTokenBlacklisted(jwtAccessToken) && !jwtService.isTokenBlacklisted(jwtRefreshToken)) {
                 final String userEmail = jwtService.extractUserEmail(jwtAccessToken);
                 if (!userEmail.isBlank() && SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -49,6 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             } else {
+                response.setStatus(SC_UNAUTHORIZED);
                 return;
             }
         }

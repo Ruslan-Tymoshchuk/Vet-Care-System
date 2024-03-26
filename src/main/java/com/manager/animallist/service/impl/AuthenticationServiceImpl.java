@@ -2,8 +2,10 @@ package com.manager.animallist.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
+import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 import static org.springframework.web.util.WebUtils.getCookie;
 import static com.manager.animallist.payload.JWTMarkers.ACCESS_TOKEN;
+import static com.manager.animallist.payload.JWTMarkers.BEARER_TOKEN_TYPE;
 import static com.manager.animallist.payload.JWTMarkers.REFRESH_TOKEN;
 import static java.lang.String.format;
 import java.time.LocalDateTime;
@@ -63,9 +65,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void logout(HttpServletRequest request) {
         Cookie accessToken = getCookie(request, ACCESS_TOKEN);
         Cookie refreshToken = getCookie(request, REFRESH_TOKEN);
-        if(accessToken != null && refreshToken != null) {
-            jwtService.addTokenToBlacklist(accessToken.getValue());
-            jwtService.addTokenToBlacklist(refreshToken.getValue());
+        if (accessToken != null && refreshToken != null
+                && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)
+                && startsWithIgnoreCase(refreshToken.getValue(), BEARER_TOKEN_TYPE)) {
+            jwtService.addTokenToBlacklist(accessToken.getValue().substring(7));
+            jwtService.addTokenToBlacklist(refreshToken.getValue().substring(7));
         }
     }
 
