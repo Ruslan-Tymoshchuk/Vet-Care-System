@@ -31,13 +31,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         Cookie accessToken = getCookie(request, ACCESS_TOKEN);
-        if (accessToken != null && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)) {
-            final String jwtToken = accessToken.getValue().substring(7);
-            if (!jwtService.isTokenInBlackList(jwtToken)) {
-                final String userEmail = jwtService.extractUserEmail(jwtToken);
+        Cookie refreshToken = getCookie(request, REFRESH_TOKEN);
+        if (accessToken != null && refreshToken != null
+                && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)
+                && startsWithIgnoreCase(refreshToken.getValue(), BEARER_TOKEN_TYPE)) {
+            final String jwtAccessToken = accessToken.getValue().substring(7);
+            final String jwtRefreshToken = refreshToken.getValue().substring(7);
+            if (!jwtService.isTokenBlacklisted(jwtAccessToken) && !jwtService.isTokenBlacklisted(jwtRefreshToken)) {
+                final String userEmail = jwtService.extractUserEmail(jwtAccessToken);
                 if (!userEmail.isBlank() && SecurityContextHolder.getContext().getAuthentication() != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                    if (jwtService.validate(jwtToken, userDetails)) {
+                    if (jwtService.validate(jwtAccessToken, userDetails)) {
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

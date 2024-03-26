@@ -10,7 +10,7 @@ public interface JwtService {
     
     boolean validate(String token, UserDetails userDetails);
     
-    boolean isTokenInBlackList(String token);
+    boolean isTokenBlacklisted(String token);
     
     void addTokenToBlacklist(String token);
 

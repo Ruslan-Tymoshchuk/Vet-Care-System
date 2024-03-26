@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import com.manager.animallist.service.JwtService;
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Function;
 import static io.jsonwebtoken.security.Keys.*;
@@ -23,7 +23,7 @@ public class JwtServiceImpl implements JwtService {
 
     public static final Key SECRET_KEY = secretKeyFor(SignatureAlgorithm.HS256);
     
-    private final List<String> tokenBlackList = new ArrayList<>();
+    private final Set<String> tokenBlackList = new HashSet<>();
 
     @Override
     public String extractUserEmail(String token) {
@@ -50,7 +50,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public boolean isTokenInBlackList(String token) {
+    public boolean isTokenBlacklisted(String token) {
         return tokenBlackList.contains(token);
     }
     
