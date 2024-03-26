@@ -6,6 +6,8 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import java.util.NoSuchElementException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -43,5 +45,17 @@ public class ExceptionHandlerAdvice {
     public ExceptionHandlerResponse handleHttpMediaTypeNotSupportedException(
             HttpMediaTypeNotSupportedException exception) {
         return new ExceptionHandlerResponse(now(), NOT_ACCEPTABLE.value(), NOT_ACCEPTABLE, exception.getMessage());
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public ExceptionHandlerResponse handleExpiredJwtException(ExpiredJwtException exception) {
+        return new ExceptionHandlerResponse(now(), UNAUTHORIZED.value(), UNAUTHORIZED, exception.getMessage());
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public ExceptionHandlerResponse handleSignatureJWTException(SignatureException exception) {
+        return new ExceptionHandlerResponse(now(), UNAUTHORIZED.value(), UNAUTHORIZED, exception.getMessage());
     }
 }
