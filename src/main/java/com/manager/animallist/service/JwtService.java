@@ -1,17 +1,15 @@
 package com.manager.animallist.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import io.jsonwebtoken.Claims;
 
 public interface JwtService {
-
-    String extractUserEmail(String token);
     
     String generateToken(String userEmail, Integer validTime);
     
-    boolean validate(String token, UserDetails userDetails);
-    
     boolean isTokenBlacklisted(String token);
-    
+      
     void addTokenToBlacklist(String token);
+
+    Claims parseToken(String token);
 
 }
