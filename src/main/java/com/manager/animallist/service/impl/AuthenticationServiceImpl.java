@@ -2,12 +2,18 @@ package com.manager.animallist.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.util.StringUtils.startsWithIgnoreCase;
+import static org.springframework.web.util.WebUtils.getCookie;
+import static com.manager.animallist.payload.JWTMarkers.ACCESS_TOKEN;
+import static com.manager.animallist.payload.JWTMarkers.BEARER_TOKEN_TYPE;
+import static com.manager.animallist.payload.JWTMarkers.REFRESH_TOKEN;
+import static java.lang.String.format;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -46,9 +52,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
-        DUser user = userRepository.findByEmail(authenticationRequest.getEmail())
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
+        DUser user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow(
+                () -> new NoSuchElementException(format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
         validateAuthenticationRequest(authenticationRequest, user);
         user.setDtLogin(now());
         return AuthenticationResponse.builder().email(user.getEmail())
@@ -58,15 +63,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        String requestTokenHeader = request.getHeader(AUTHORIZATION);
-        String jwtToken = requestTokenHeader.substring(7);
-        jwtService.addTokenToBlacklist(jwtToken);
+        Cookie accessToken = getCookie(request, ACCESS_TOKEN);
+        Cookie refreshToken = getCookie(request, REFRESH_TOKEN);
+        if (accessToken != null && refreshToken != null
+                && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)
+                && startsWithIgnoreCase(refreshToken.getValue(), BEARER_TOKEN_TYPE)) {
+            jwtService.addTokenToBlacklist(accessToken.getValue().substring(7));
+            jwtService.addTokenToBlacklist(refreshToken.getValue().substring(7));
+        }
     }
 
     private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {
         if (user.isAccountNonLocked()) {
             if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
-                throw new LockedException(String.format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
+                throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
                         maxFailedAttempts, MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
             }
             if (!passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
@@ -75,7 +85,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
                     failedAttempts.put(user.getEmail(), 0);
                 }
-                throw new BadCredentialsException(String.format(INCORRECT_PASSWORD, actualFailedAttempts));
+                throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
             } else {
                 failedAttempts.put(user.getEmail(), 0);
             }

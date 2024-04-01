@@ -1,9 +1,10 @@
 package com.manager.animallist.controller;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static java.util.Arrays.stream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ import com.manager.animallist.payload.RegistrationRequest;
 import com.manager.animallist.payload.UserEmailValidationRequest;
 import com.manager.animallist.payload.UserEmailValidationResponse;
 import com.manager.animallist.service.AuthenticationService;
-import com.manager.animallist.service.JwtService;
+import com.manager.animallist.service.CookiesService;
 import com.manager.animallist.service.UserService;
 import com.manager.animallist.service.UsernameValidator;
 import lombok.RequiredArgsConstructor;
@@ -26,30 +27,35 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    private final JwtService jwtService;
-    private final UserService userService;
-    private final AuthenticationService authenticationService;
-    private final UsernameValidator usernameValidator;
+    public static final String SPACE_DELIMITER = " ";
 
+    private final UserService userService;
+    private final CookiesService cookieService;
+    private final UsernameValidator usernameValidator;
+    private final AuthenticationService authenticationService;
+   
     @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public AuthenticationResponse performRegistration(@RequestBody RegistrationRequest registrationRequest,
             HttpServletResponse response) {
-        String accessToken = jwtService.generateToken(registrationRequest.getEmail());
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtService.createJwtCookie(accessToken).toString());
+        cookieService.addUserJwtCookies(response, registrationRequest.getEmail());
         return userService.saveNewUser(registrationRequest);
     }
 
     @PostMapping("/login")
     public AuthenticationResponse performAuthenticate(@RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {
-        String accessToken = jwtService.generateToken(authenticationRequest.getEmail());
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtService.createJwtCookie(accessToken).toString());
+        cookieService.addUserJwtCookies(response, authenticationRequest.getEmail());
         return authenticationService.login(authenticationRequest);
     }
 
     @GetMapping("/logout")
-    public void performLogout(HttpServletRequest request) {
+    public void performLogout(HttpServletRequest request, HttpServletResponse response) {
+        stream(request.getCookies()).forEach(cookie -> {
+            String cookieName = cookie.getName();
+            Cookie cookieToDelete = cookieService.buildCookie(cookieName, SPACE_DELIMITER, 0);
+            response.addCookie(cookieToDelete);
+        });
         authenticationService.logout(request);
     }
     
