@@ -14,7 +14,7 @@ The user has 10 attempts to enter an incorrect password, or - block for 1 hour
 
 Authorized user gets full access to their animals
 
-##########################################################################################
+#####
 
 In this solution used MapStruct mapper and Maven build tool
 
