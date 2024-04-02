@@ -5,7 +5,6 @@ import static java.util.Arrays.stream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +48,7 @@ public class AuthenticationController {
         return authenticationService.login(authenticationRequest);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public void performLogout(HttpServletRequest request, HttpServletResponse response) {
         stream(request.getCookies()).forEach(cookie -> {
             String cookieName = cookie.getName();

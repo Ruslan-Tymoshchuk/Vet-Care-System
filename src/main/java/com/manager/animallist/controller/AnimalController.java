@@ -1,10 +1,10 @@
 package com.manager.animallist.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.http.HttpStatus.*;
 import java.util.List;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +54,7 @@ public class AnimalController {
 
     @Secured({ "USER" })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public EntityModel<AnimalDetailsResponse> saveNewAnimal(@RequestBody AnimalDetailsRequest animalDetailsRequest,
             @AuthenticationPrincipal(expression = "username") String userEmail) {
         return animalAssembler.toModel(animalService.createAnimal(animalDetailsRequest, userEmail));
@@ -62,7 +62,7 @@ public class AnimalController {
 
     @Secured({ "USER" })
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     public void updateAnimal(@PathVariable("id") Integer animalId,
             @RequestBody AnimalDetailsRequest animalDetailsRequest,
             @AuthenticationPrincipal(expression = "username") String userEmail) {
@@ -71,7 +71,7 @@ public class AnimalController {
 
     @Secured({ "ADMIN", "USER" })
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     public void deleteAnimalById(@PathVariable("id") Integer id) {
         animalService.deleteAnimalById(id);
     }
