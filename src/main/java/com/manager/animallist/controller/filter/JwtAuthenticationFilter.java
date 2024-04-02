@@ -2,7 +2,7 @@ package com.manager.animallist.controller.filter;
 
 import static org.springframework.web.util.WebUtils.getCookie;
 import static org.springframework.util.StringUtils.startsWithIgnoreCase;
-import static com.manager.animallist.payload.JWTMarkers.*;
+import static com.manager.animallist.payload.JwtMarkers.*;
 import static java.net.URLDecoder.decode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;

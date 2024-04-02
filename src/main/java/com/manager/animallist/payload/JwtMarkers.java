@@ -1,8 +1,8 @@
 package com.manager.animallist.payload;
 
-public final class JWTMarkers {
+public final class JwtMarkers {
 
-    private JWTMarkers() {
+    private JwtMarkers() {
     }
 
     public static final String BEARER_TOKEN_TYPE = "Bearer";

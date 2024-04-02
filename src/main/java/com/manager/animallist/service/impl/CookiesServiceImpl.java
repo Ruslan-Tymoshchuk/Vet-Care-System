@@ -1,8 +1,8 @@
 package com.manager.animallist.service.impl;
 
-import static com.manager.animallist.payload.JWTMarkers.ACCESS_TOKEN;
-import static com.manager.animallist.payload.JWTMarkers.BEARER_TOKEN_TYPE;
-import static com.manager.animallist.payload.JWTMarkers.REFRESH_TOKEN;
+import static com.manager.animallist.payload.JwtMarkers.ACCESS_TOKEN;
+import static com.manager.animallist.payload.JwtMarkers.BEARER_TOKEN_TYPE;
+import static com.manager.animallist.payload.JwtMarkers.REFRESH_TOKEN;
 import static java.lang.String.format;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
