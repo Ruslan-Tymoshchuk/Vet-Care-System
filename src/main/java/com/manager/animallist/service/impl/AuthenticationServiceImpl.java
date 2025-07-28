@@ -11,29 +11,29 @@ import static java.lang.String.format;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.manager.animallist.domain.DUser;
+import com.manager.animallist.domain.User;
 import com.manager.animallist.payload.AuthenticationRequest;
 import com.manager.animallist.payload.AuthenticationResponse;
-import com.manager.animallist.repository.UserRepository;
 import com.manager.animallist.service.AuthenticationService;
 import com.manager.animallist.service.JwtService;
+import com.manager.animallist.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    public static final String USER_IS_DOES_NOT_EXISTS = "The user with email: %s is doesn't exists.";
     public static final String ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS = "Your account has been locked due to %d failed attempts. "
             + "It will be unlocked after %d minutes.";
     public static final String INCORRECT_PASSWORD = "Incorrect password! You taken %s attempts";
@@ -45,19 +45,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private int maxFailedAttempts;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final Map<String, Integer> failedAttempts = new HashMap<>();
     private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();
 
     @Override
     @Transactional
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
-        DUser user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow(
-                () -> new NoSuchElementException(format(USER_IS_DOES_NOT_EXISTS, authenticationRequest.getEmail())));
+        User user = userService.findByEmail(authenticationRequest.getEmail());
         validateAuthenticationRequest(authenticationRequest, user);
         user.setDtLogin(now());
         return AuthenticationResponse.builder().email(user.getEmail())
-                .roles(user.getRoles().stream().map(role -> role.getRoleType().name()).collect(Collectors.toSet()))
+                .roles(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -73,7 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, DUser user) {
+    private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, User user) {
         if (user.isAccountNonLocked()) {
             if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
                 throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,

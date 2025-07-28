@@ -11,21 +11,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
-@Builder
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
-public class DUser {
-
+public class User implements UserDetails {
+    
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -42,14 +48,26 @@ public class DUser {
     private String password;
     
     @ManyToMany
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
-    
-    @Column(name = "dt_login")
-    private LocalDateTime dtLogin;
+    @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+    private Set<Authority> authorities;
+   
+    @Column(name = "account_non_expired")
+    private boolean accountNonExpired;
     
     @Column(name = "account_non_locked")
     private boolean accountNonLocked;
-        
+    
+    @Column(name = "credentials_non_expired")
+    private boolean credentialsNonExpired;
+
+    private boolean enabled;
+    
+    @Column(name = "dt_login")
+    private LocalDateTime dtLogin;
+
+    public String getUsername() {
+        return this.email;
+    }
+   
 }

@@ -4,12 +4,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.manager.animallist.domain.DUser;
+import com.manager.animallist.domain.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<DUser, Integer>{
+public interface UserRepository extends JpaRepository<User, Integer>{
     
-    Optional<DUser> findByEmail(String name);
+    Optional<User> findByEmail(String name);
     
     boolean existsByEmail(String name);
     

@@ -1,6 +1,6 @@
 package com.manager.animallist.domain;
 
-public enum EUserRole {
+public enum EAuthority {
 
     USER, ADMIN
     
