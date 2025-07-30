@@ -1,0 +1,29 @@
+package com.system.vetcare.domain;
+
+import javax.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import lombok.*;
+
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "authorities")
+public class Authority implements GrantedAuthority {
+
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "title")
+    private EAuthority title;
+
+    @Override
+    public String getAuthority() {
+        return title.name();
+    }
+
+}
