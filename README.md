@@ -1,4 +1,4 @@
-# Animal-List-Management-Service
+# Vet-Care-System
 
 Explanation:
 
@@ -12,7 +12,7 @@ Once the access token has expired, the user automatically receives a new token p
 
 The user has 10 attempts to enter an incorrect password, or - block for 1 hour
 
-Authorized user gets full access to their animals
+Authorized user gets full access to their pets
 
 *****
 
