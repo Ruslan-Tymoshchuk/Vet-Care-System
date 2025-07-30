@@ -8,19 +8,23 @@ VALUES ('Emily', 'Smith', 'emily@gmail.com','$2a$12$d1XrgmOS0E30LrNWEjAOF.lKpkc/
 --password: test_password
 
 INSERT INTO authorities (title)
-VALUES ('USER'),
-       ('ADMIN');
+VALUES ('OWNER'),
+       ('VETERINARIAN');
+       
+INSERT INTO owners (user_id) VALUES (1);
+
+INSERT INTO veterinarians (user_id) VALUES (2);
        
 INSERT INTO user_authorities (user_id, authority_id)
 VALUES (1, 1),
-       (2, 1),
+       (2, 2),
        (3, 1),
        (4, 1),
        (5, 1);
        
-INSERT INTO animals (birth_date, gender, nickname, user_id) 
-VALUES ('2018-07-10', 'FEMALE', 'Tagira', 1), 
-       ('2019-07-10', 'FEMALE', 'TRIXIE', 2), 
-       ('2019-07-10', 'MALE', 'Keks', 3), 
-       ('2019-03-10', 'MALE', 'Sulin', 4), 
-       ('2019-05-07', 'MALE', 'Chapye', 5);
+INSERT INTO pets (owner_id, veterinarian_id, birth_date, gender, nickname) 
+VALUES (1, 1, '2018-07-10', 'FEMALE', 'Tagira'), 
+       (1, 1, '2019-07-10', 'FEMALE', 'TRIXIE'), 
+       (1, 1, '2019-07-10', 'MALE', 'Keks'), 
+       (1, 1, '2019-03-10', 'MALE', 'Sulin'), 
+       (1, 1, '2019-05-07', 'MALE', 'Chapye');

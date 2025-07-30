@@ -1,6 +1,7 @@
-CREATE TABLE animals (
+CREATE TABLE pets (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    owner_id INTEGER NOT NULL REFERENCES owners(id),
+    veterinarian_id INTEGER NOT NULL REFERENCES veterinarians(id),
     birth_date DATE,
     gender VARCHAR NOT NULL,
     nickname VARCHAR NOT NULL  
