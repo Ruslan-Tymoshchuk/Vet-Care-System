@@ -5,54 +5,54 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.manager.animallist.domain.Pet;
-import com.manager.animallist.payload.AnimalDetailsRequest;
-import com.manager.animallist.payload.AnimalDetailsResponse;
+import com.manager.animallist.payload.PetDetailsRequest;
+import com.manager.animallist.payload.PetDetailsResponse;
 import com.manager.animallist.payload.mapstruct.PetMapper;
 import com.manager.animallist.repository.PetRepository;
-import com.manager.animallist.service.AnimalService;
+import com.manager.animallist.service.PetService;
 import com.manager.animallist.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PetServiceImpl implements AnimalService {
+public class PetServiceImpl implements PetService {
 
     private final UserService userService;
     private final PetMapper animalMapper;
     private final PetRepository animalRepository;
 
     @Override
-    public List<AnimalDetailsResponse> findAllAnimals() {
-        return animalRepository.findAll().stream().map(animalMapper::animalToAnimalDetailsResponse).toList();
+    public List<PetDetailsResponse> findAllAnimals() {
+        return animalRepository.findAll().stream().map(animalMapper::petToPetDetailsResponse).toList();
     }
 
     @Override
-    public List<AnimalDetailsResponse> findAllAnimalsByUser(String userEmail) {
-        return animalRepository.findByUser(userEmail).stream().map(animalMapper::animalToAnimalDetailsResponse)
+    public List<PetDetailsResponse> findAllAnimalsByUser(String userEmail) {
+        return animalRepository.findByUser(userEmail).stream().map(animalMapper::petToPetDetailsResponse)
                 .toList();
     }
 
     @Override
     @Transactional
-    public AnimalDetailsResponse createAnimal(AnimalDetailsRequest animalDetails, String userEmail) {
-        Pet pet = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
+    public PetDetailsResponse createAnimal(PetDetailsRequest animalDetails, String userEmail) {
+        Pet pet = animalRepository.save(animalMapper.petDetailsToPet(animalDetails));
         userService.assignUser(pet, userEmail);
-        return animalMapper.animalToAnimalDetailsResponse(pet);
+        return animalMapper.petToPetDetailsResponse(pet);
     }
 
     @Override
-    public AnimalDetailsResponse getAnimalById(Integer id) {
-        return animalMapper.animalToAnimalDetailsResponse(animalRepository.findById(id)
+    public PetDetailsResponse getAnimalById(Integer id) {
+        return animalMapper.petToPetDetailsResponse(animalRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find animal with id: " + id)));
     }
 
     @Override
     @Transactional
-    public AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetails, Integer animalId, String userEmail) {
-        Pet animal = animalMapper.animalDetailsToAnimal(animalDetails, animalId);
+    public PetDetailsResponse updateAnimal(PetDetailsRequest animalDetails, Integer animalId, String userEmail) {
+        Pet animal = animalMapper.petDetailsToPet(animalDetails, animalId);
         userService.assignUser(animal, userEmail);
-        return animalMapper.animalToAnimalDetailsResponse(animalRepository.save(animal));
+        return animalMapper.petToPetDetailsResponse(animalRepository.save(animal));
     }
 
     @Override

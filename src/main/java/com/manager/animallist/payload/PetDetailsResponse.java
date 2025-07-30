@@ -3,7 +3,7 @@ package com.manager.animallist.payload;
 import lombok.Data;
 
 @Data
-public class AnimalDetailsResponse {
+public class PetDetailsResponse {
 
     private Integer id;
     private String birthDate;

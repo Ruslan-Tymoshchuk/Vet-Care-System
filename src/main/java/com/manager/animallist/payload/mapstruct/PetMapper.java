@@ -2,16 +2,16 @@ package com.manager.animallist.payload.mapstruct;
 
 import org.mapstruct.Mapper;
 import com.manager.animallist.domain.Pet;
-import com.manager.animallist.payload.AnimalDetailsRequest;
-import com.manager.animallist.payload.AnimalDetailsResponse;
+import com.manager.animallist.payload.PetDetailsRequest;
+import com.manager.animallist.payload.PetDetailsResponse;
 
 @Mapper(componentModel = "spring")
 public interface PetMapper {
     
-    AnimalDetailsResponse animalToAnimalDetailsResponse(Pet animal);
+    PetDetailsResponse petToPetDetailsResponse(Pet pet);
 
-    Pet animalDetailsToAnimal(AnimalDetailsRequest animalDetails);
+    Pet petDetailsToPet(PetDetailsRequest petDetailsRequest);
     
-    Pet animalDetailsToAnimal(AnimalDetailsRequest animalDetails, Integer id);
+    Pet petDetailsToPet(PetDetailsRequest petDetailsRequest, Integer id);
     
 }

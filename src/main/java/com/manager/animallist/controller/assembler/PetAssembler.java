@@ -5,15 +5,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
-import com.manager.animallist.controller.AnimalController;
-import com.manager.animallist.payload.AnimalDetailsResponse;
+import com.manager.animallist.controller.PetController;
+import com.manager.animallist.payload.PetDetailsResponse;
 
 @Component
-public class AnimalAssembler implements RepresentationModelAssembler<AnimalDetailsResponse, EntityModel<AnimalDetailsResponse>> {
+public class PetAssembler implements RepresentationModelAssembler<PetDetailsResponse, EntityModel<PetDetailsResponse>> {
 
     @Override
-    public EntityModel<AnimalDetailsResponse> toModel(AnimalDetailsResponse animalDetailsResponse) {
+    public EntityModel<PetDetailsResponse> toModel(PetDetailsResponse animalDetailsResponse) {
         return EntityModel.of(animalDetailsResponse,
-                linkTo(methodOn(AnimalController.class).getAnimalById(animalDetailsResponse.getId())).withSelfRel());
+                linkTo(methodOn(PetController.class).getAnimalById(animalDetailsResponse.getId())).withSelfRel());
     }
 }
