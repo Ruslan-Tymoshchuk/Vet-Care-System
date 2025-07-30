@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.manager.animallist.domain.Animal;
+import com.manager.animallist.domain.Pet;
 import com.manager.animallist.domain.User;
 import com.manager.animallist.payload.AuthenticationResponse;
 import com.manager.animallist.payload.RegistrationRequest;
@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void assignUser(Animal animal, String userEmail) {
-        animal.setUser(userRepository.findByEmail(userEmail).orElseThrow(NoSuchElementException::new));
+    public void assignUser(Pet pet, String userEmail) {
+        pet.setOwner(null);
     }
 
     @Override

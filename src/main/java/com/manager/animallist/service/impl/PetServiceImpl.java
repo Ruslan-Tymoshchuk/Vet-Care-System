@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.manager.animallist.domain.Animal;
+import com.manager.animallist.domain.Pet;
 import com.manager.animallist.payload.AnimalDetailsRequest;
 import com.manager.animallist.payload.AnimalDetailsResponse;
-import com.manager.animallist.payload.mapstruct.AnimalMapper;
-import com.manager.animallist.repository.AnimalRepository;
+import com.manager.animallist.payload.mapstruct.PetMapper;
+import com.manager.animallist.repository.PetRepository;
 import com.manager.animallist.service.AnimalService;
 import com.manager.animallist.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AnimalServiceImpl implements AnimalService {
+public class PetServiceImpl implements AnimalService {
 
     private final UserService userService;
-    private final AnimalMapper animalMapper;
-    private final AnimalRepository animalRepository;
+    private final PetMapper animalMapper;
+    private final PetRepository animalRepository;
 
     @Override
     public List<AnimalDetailsResponse> findAllAnimals() {
@@ -36,9 +36,9 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional
     public AnimalDetailsResponse createAnimal(AnimalDetailsRequest animalDetails, String userEmail) {
-        Animal animal = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
-        userService.assignUser(animal, userEmail);
-        return animalMapper.animalToAnimalDetailsResponse(animal);
+        Pet pet = animalRepository.save(animalMapper.animalDetailsToAnimal(animalDetails));
+        userService.assignUser(pet, userEmail);
+        return animalMapper.animalToAnimalDetailsResponse(pet);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional
     public AnimalDetailsResponse updateAnimal(AnimalDetailsRequest animalDetails, Integer animalId, String userEmail) {
-        Animal animal = animalMapper.animalDetailsToAnimal(animalDetails, animalId);
+        Pet animal = animalMapper.animalDetailsToAnimal(animalDetails, animalId);
         userService.assignUser(animal, userEmail);
         return animalMapper.animalToAnimalDetailsResponse(animalRepository.save(animal));
     }
