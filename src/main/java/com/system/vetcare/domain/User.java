@@ -47,6 +47,9 @@ public class User implements UserDetails {
 
     private String password;
     
+    @Column(name = "legal_certificate_id")
+    private String legalCertificateId;
+    
     @ManyToMany
     @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
