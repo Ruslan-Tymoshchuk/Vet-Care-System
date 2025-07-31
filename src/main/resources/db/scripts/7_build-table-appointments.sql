@@ -6,5 +6,6 @@ CREATE TABLE appointments (
     visit_date DATE,
     visit_time TIME,
     room VARCHAR NOT NULL,
-    type_of_visit VARCHAR NOT NULL  
+    type_of_visit VARCHAR NOT NULL,
+    status VARCHAR NOT NULL
 );
