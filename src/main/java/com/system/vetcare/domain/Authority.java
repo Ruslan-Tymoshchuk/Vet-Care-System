@@ -18,7 +18,6 @@ public class Authority implements GrantedAuthority {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "title")
     private EAuthority title;
 
     @Override
