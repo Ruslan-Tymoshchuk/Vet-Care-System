@@ -1,5 +1,7 @@
 # Vet-Care-System
 
+# A system for managing veterinary clinic operations, including appointments, veterinarians, pet owners, and medical records
+
 Explanation:
 
 Non-registered user has the opportunity to check, this email is available for registration 
