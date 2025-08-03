@@ -1,7 +1,6 @@
 package com.system.vetcare.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 
@@ -39,8 +39,9 @@ public class Appointment {
     @Column(name = "visit_date")
     private LocalDate visitDate;
     
-    @Column(name = "visit_time")
-    private LocalTime visitTime;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "time_slot_id", referencedColumnName = "id")
+    private AppointmentTimeSlot timeSlot;
     
     private String room;
     
