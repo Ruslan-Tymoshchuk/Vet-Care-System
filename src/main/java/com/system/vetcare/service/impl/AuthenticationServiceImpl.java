@@ -21,14 +21,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.system.vetcare.domain.User;
 import com.system.vetcare.payload.AuthenticationRequest;
 import com.system.vetcare.payload.AuthenticationResponse;
 import com.system.vetcare.service.AuthenticationService;
 import com.system.vetcare.service.JwtService;
 import com.system.vetcare.service.UserService;
-
 import lombok.RequiredArgsConstructor;
 
 @Component

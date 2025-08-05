@@ -1,4 +1,4 @@
-package com.system.vetcare.domain;
+package com.system.vetcare.domain.enums;
 
 public enum EAuthority {
 

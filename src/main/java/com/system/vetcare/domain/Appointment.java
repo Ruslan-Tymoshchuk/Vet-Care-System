@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.system.vetcare.domain.enums.EAppointmentStatus;
+import com.system.vetcare.domain.enums.EAppointmentType;
 import lombok.Getter;
 
 @Getter

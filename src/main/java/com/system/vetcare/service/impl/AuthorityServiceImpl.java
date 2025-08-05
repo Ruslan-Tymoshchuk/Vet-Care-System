@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.system.vetcare.domain.Authority;
-import com.system.vetcare.domain.EAuthority;
+import com.system.vetcare.domain.enums.EAuthority;
 import com.system.vetcare.repository.AuthorityRepository;
 import com.system.vetcare.service.AuthorityService;
 

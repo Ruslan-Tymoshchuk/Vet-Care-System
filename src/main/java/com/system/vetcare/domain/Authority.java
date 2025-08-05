@@ -3,6 +3,7 @@ package com.system.vetcare.domain;
 import javax.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
+import com.system.vetcare.domain.enums.EAuthority;
 import lombok.*;
 
 @Data
