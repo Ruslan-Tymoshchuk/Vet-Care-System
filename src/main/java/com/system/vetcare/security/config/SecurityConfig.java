@@ -1,4 +1,4 @@
-package com.system.vetcare.config;
+package com.system.vetcare.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
-import com.system.vetcare.controller.filter.JwtAuthenticationFilter;
+import com.system.vetcare.security.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -39,4 +39,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
 }

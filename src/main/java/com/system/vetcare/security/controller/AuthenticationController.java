@@ -1,4 +1,4 @@
-package com.system.vetcare.controller;
+package com.system.vetcare.security.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static java.util.Arrays.stream;
