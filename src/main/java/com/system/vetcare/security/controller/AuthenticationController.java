@@ -10,17 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.system.vetcare.payload.AuthenticationRequest;
-import com.system.vetcare.payload.AuthenticationResponse;
 import com.system.vetcare.payload.RegistrationRequest;
 import com.system.vetcare.payload.UserEmailValidationRequest;
 import com.system.vetcare.payload.UserEmailValidationResponse;
+import com.system.vetcare.security.payload.AuthenticationRequest;
+import com.system.vetcare.security.payload.AuthenticationResponse;
 import com.system.vetcare.service.AuthenticationService;
 import com.system.vetcare.service.CookiesService;
 import com.system.vetcare.service.UserService;
 import com.system.vetcare.service.UsernameValidator;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -46,7 +44,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public AuthenticationResponse performAuthenticate(@RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {
-        cookieService.addUserJwtCookies(response, authenticationRequest.getEmail());
+        cookieService.addUserJwtCookies(response, authenticationRequest.email());
         return authenticationService.login(authenticationRequest);
     }
 
