@@ -1,5 +1,6 @@
 package com.system.vetcare.security.strategy;
 
+import static com.system.vetcare.domain.enums.EAuthority.MANAGER;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Manager;
 import com.system.vetcare.domain.enums.EAuthority;
@@ -15,7 +16,7 @@ public class ManagerStrategyResolver implements AuthorityResolverStrategy {
 
     @Override
     public EAuthority getSupportedAuthority() {
-        return EAuthority.MANAGER;
+        return MANAGER;
     }
     
     @Override
