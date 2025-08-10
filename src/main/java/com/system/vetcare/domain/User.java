@@ -66,8 +66,8 @@ public class User implements UserDetails {
 
     private boolean enabled;
     
-    @Column(name = "dt_login")
-    private LocalDateTime dtLogin;
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
     public String getUsername() {
         return this.email;

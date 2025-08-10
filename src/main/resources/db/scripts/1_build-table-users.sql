@@ -9,5 +9,5 @@ CREATE TABLE users (
     account_non_locked BOOLEAN NOT NULL,
     credentials_non_expired BOOLEAN NOT NULL,
     enabled BOOLEAN NOT NULL,
-    dt_login TIMESTAMP NOT NULL
+    last_login TIMESTAMP NOT NULL
 );
