@@ -1,4 +1,4 @@
-package com.system.vetcare.service.impl;
+package com.system.vetcare.security.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -9,22 +9,23 @@ import static com.system.vetcare.payload.JwtMarkers.BEARER_TOKEN_TYPE;
 import static com.system.vetcare.payload.JwtMarkers.REFRESH_TOKEN;
 import static java.lang.String.format;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import com.system.vetcare.domain.User;
-import com.system.vetcare.payload.AuthenticationRequest;
-import com.system.vetcare.payload.AuthenticationResponse;
-import com.system.vetcare.service.AuthenticationService;
+import com.system.vetcare.security.payload.AuthenticationRequest;
+import com.system.vetcare.security.payload.AuthenticationResponse;
+import com.system.vetcare.security.payload.UserAuthorityDetails;
+import com.system.vetcare.security.service.AuthenticationService;
+import com.system.vetcare.security.strategy.AuthorityResolver;
 import com.system.vetcare.service.JwtService;
 import com.system.vetcare.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final String ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS = "Your account has been locked due to %d failed attempts. "
             + "It will be unlocked after %d minutes.";
     public static final String INCORRECT_PASSWORD = "Incorrect password! You taken %s attempts";
@@ -46,19 +48,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final UserService userService;
     private final Map<String, Integer> failedAttempts = new HashMap<>();
-    private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();
-
+    private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();   
+    private final AuthorityResolver authorityResolver;
+    
     @Override
-    @Transactional
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
-        User user = userService.findByEmail(authenticationRequest.getEmail());
-        validateAuthenticationRequest(authenticationRequest, user);
-        user.setDtLogin(now());
-        return AuthenticationResponse.builder().email(user.getEmail())
-                .roles(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
-                .build();
+        User user = validateCredentials(authenticationRequest);
+        List<UserAuthorityDetails> userAuthorities = authorityResolver.resolveAllAuthorities(user);
+        user = userService.updateLoginTimestamp(user);
+        return new AuthenticationResponse(user.getEmail(), user.getLastLogin().format(TIME_FORMATTER), userAuthorities);
     }
-
+    
+    private User validateCredentials(AuthenticationRequest authenticationRequest) {
+        User user = userService.findByEmail(authenticationRequest.email()); 
+        if (user.isAccountNonLocked()) {
+            if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
+                throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS, maxFailedAttempts,
+                        MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
+            }
+            if (!passwordEncoder.matches(authenticationRequest.password(), user.getPassword())) {
+                int actualFailedAttempts = failedAttempts.merge(user.getEmail(), 1, Integer::sum);
+                if (failedAttempts.get(user.getEmail()) == maxFailedAttempts) {
+                    accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
+                    failedAttempts.put(user.getEmail(), 0);
+                }
+                throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
+            } else {
+                failedAttempts.put(user.getEmail(), 0);
+                return user;
+            }
+        } else {
+            throw new LockedException(ACCOUNT_HAS_BEEN_LOCKED);
+        }    
+    }
+    
     @Override
     public void logout(HttpServletRequest request) {
         Cookie accessToken = getCookie(request, ACCESS_TOKEN);
@@ -70,25 +93,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             jwtService.addTokenToBlacklist(refreshToken.getValue().substring(7));
         }
     }
-
-    private void validateAuthenticationRequest(AuthenticationRequest authenticationRequest, User user) {
-        if (user.isAccountNonLocked()) {
-            if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
-                throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS,
-                        maxFailedAttempts, MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
-            }
-            if (!passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
-                int actualFailedAttempts = failedAttempts.merge(user.getEmail(), 1, Integer::sum);
-                if (failedAttempts.get(user.getEmail()) == maxFailedAttempts) {
-                    accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
-                    failedAttempts.put(user.getEmail(), 0);
-                }
-                throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
-            } else {
-                failedAttempts.put(user.getEmail(), 0);
-            }
-        } else {
-            throw new LockedException(ACCOUNT_HAS_BEEN_LOCKED);
-        }
-    }
+ 
 }

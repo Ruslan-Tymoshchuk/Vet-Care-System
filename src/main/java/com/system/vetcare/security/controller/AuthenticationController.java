@@ -15,7 +15,7 @@ import com.system.vetcare.payload.UserEmailValidationRequest;
 import com.system.vetcare.payload.UserEmailValidationResponse;
 import com.system.vetcare.security.payload.AuthenticationRequest;
 import com.system.vetcare.security.payload.AuthenticationResponse;
-import com.system.vetcare.service.AuthenticationService;
+import com.system.vetcare.security.service.AuthenticationService;
 import com.system.vetcare.service.CookiesService;
 import com.system.vetcare.service.UserService;
 import com.system.vetcare.service.UsernameValidator;
