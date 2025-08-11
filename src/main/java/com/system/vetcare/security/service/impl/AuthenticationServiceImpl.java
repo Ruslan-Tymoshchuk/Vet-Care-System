@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.system.vetcare.domain.User;
@@ -60,22 +61,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     
     private User validateCredentials(AuthenticationRequest authenticationRequest) {
-        User user = userService.findByEmail(authenticationRequest.email()); 
+        UserDetails user = userService.loadUserByUsername(authenticationRequest.email()); 
         if (user.isAccountNonLocked()) {
-            if (accountlockTime.containsKey(user.getEmail()) && accountlockTime.get(user.getEmail()).isAfter(now())) {
+            if (accountlockTime.containsKey(user.getUsername()) && accountlockTime.get(user.getUsername()).isAfter(now())) {
                 throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS, maxFailedAttempts,
-                        MINUTES.between(now(), accountlockTime.get(user.getEmail())) % 60));
+                        MINUTES.between(now(), accountlockTime.get(user.getUsername())) % 60));
             }
             if (!passwordEncoder.matches(authenticationRequest.password(), user.getPassword())) {
-                int actualFailedAttempts = failedAttempts.merge(user.getEmail(), 1, Integer::sum);
-                if (failedAttempts.get(user.getEmail()) == maxFailedAttempts) {
-                    accountlockTime.put(user.getEmail(), now().plusMinutes(lockDurationMinutes));
-                    failedAttempts.put(user.getEmail(), 0);
+                int actualFailedAttempts = failedAttempts.merge(user.getUsername(), 1, Integer::sum);
+                if (failedAttempts.get(user.getUsername()) == maxFailedAttempts) {
+                    accountlockTime.put(user.getUsername(), now().plusMinutes(lockDurationMinutes));
+                    failedAttempts.put(user.getUsername(), 0);
                 }
                 throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
             } else {
-                failedAttempts.put(user.getEmail(), 0);
-                return user;
+                failedAttempts.put(user.getUsername(), 0);
+                return (User) user;
             }
         } else {
             throw new LockedException(ACCOUNT_HAS_BEEN_LOCKED);
