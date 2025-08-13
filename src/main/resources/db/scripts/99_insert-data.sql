@@ -8,16 +8,19 @@ VALUES ('Emily', 'Smith', 'emily@gmail.com','$2a$12$d1XrgmOS0E30LrNWEjAOF.lKpkc/
 --password: test_password
 
 INSERT INTO authorities (title)
-VALUES ('OWNER'),
+VALUES ('MANAGER'),
+       ('OWNER'),
        ('VETERINARIAN');
+       
+INSERT INTO managers (user_id) VALUES (3), (4), (5);       
        
 INSERT INTO owners (user_id) VALUES (1);
 
 INSERT INTO veterinarians (user_id) VALUES (2);
        
 INSERT INTO user_authorities (user_id, authority_id)
-VALUES (1, 1),
-       (2, 2),
+VALUES (1, 2),
+       (2, 3),
        (3, 1),
        (4, 1),
        (5, 1);
