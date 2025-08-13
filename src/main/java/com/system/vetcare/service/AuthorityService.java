@@ -1,11 +1,13 @@
 package com.system.vetcare.service;
 
-import java.util.Set;
-
+import java.util.List;
 import com.system.vetcare.domain.Authority;
+import com.system.vetcare.payload.AuthorityDetailsResponse;
 
 public interface AuthorityService {
 
-    Set<Authority> findAuthorities(Set<String> titles);
+    List<AuthorityDetailsResponse> findAll();
+
+    List<Authority> findAllById(List<Integer> authorityIds);
     
 }

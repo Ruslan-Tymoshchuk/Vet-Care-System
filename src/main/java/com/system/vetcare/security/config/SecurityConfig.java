@@ -9,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-
 import com.system.vetcare.security.filter.JwtAuthenticationFilter;
 
 @Configuration
@@ -21,6 +20,7 @@ public class SecurityConfig {
         http.csrf().disable()
                    .authorizeRequests()
                    .antMatchers("/api/v1/auth/login").permitAll()
+                   .antMatchers("/api/v1/authorities/all").permitAll()
                    .antMatchers("/api/v1/auth/registration").permitAll()
                    .antMatchers("/api/v1/auth/validate_email").permitAll()
                    .anyRequest()

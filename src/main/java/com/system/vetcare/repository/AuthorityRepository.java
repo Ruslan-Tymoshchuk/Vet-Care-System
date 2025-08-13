@@ -1,12 +1,8 @@
 package com.system.vetcare.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import com.system.vetcare.domain.Authority;
-import com.system.vetcare.domain.enums.EAuthority;
-import java.util.Optional;
 
-public interface AuthorityRepository extends JpaRepository<Authority, Integer> {
-    
-    Optional<Authority> findByTitle(EAuthority title);
-    
-}
+@Repository
+public interface AuthorityRepository extends JpaRepository<Authority, Integer> {}

@@ -2,13 +2,10 @@
 package com.system.vetcare.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.List;
 import org.springframework.stereotype.Service;
-
 import com.system.vetcare.domain.Authority;
-import com.system.vetcare.domain.enums.EAuthority;
+import com.system.vetcare.payload.AuthorityDetailsResponse;
 import com.system.vetcare.repository.AuthorityRepository;
 import com.system.vetcare.service.AuthorityService;
 
@@ -16,17 +13,17 @@ import com.system.vetcare.service.AuthorityService;
 @RequiredArgsConstructor
 public class AuthorityServiceImpl implements AuthorityService {
 
-    private final AuthorityRepository roleRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Override
-    public Set<Authority> findAuthorities(Set<String> titles) {
-        Set<Authority> authorities = new HashSet<>();
-        titles.forEach(title -> {
-            Authority authority = roleRepository.findByTitle(EAuthority.valueOf(title))
-                    .orElseThrow(NoSuchElementException::new);
-            authorities.add(authority);
-        });
-        return authorities;
+    public List<AuthorityDetailsResponse> findAll() {
+        return authorityRepository.findAll().stream()
+                .map(authority -> new AuthorityDetailsResponse(authority.getId(), authority.getAuthority())).toList();
     }
 
+    @Override
+    public List<Authority> findAllById(List<Integer> authorityIds) {
+        return authorityRepository.findAllById(authorityIds);
+    }
+    
 }
