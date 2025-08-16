@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.system.vetcare.domain.User;
 import com.system.vetcare.payload.RegistrationRequest;
 import com.system.vetcare.payload.UserEmailValidationRequest;
 import com.system.vetcare.payload.UserEmailValidationResponse;
@@ -37,15 +38,17 @@ public class AuthenticationController {
     @ResponseStatus(CREATED)
     public AuthenticationResponse performRegistration(@RequestBody RegistrationRequest registrationRequest,
             HttpServletResponse response) {
+        User user = userService.save(registrationRequest);
         cookieService.addUserJwtCookies(response, registrationRequest.getEmail());
-        return userService.saveNewUser(registrationRequest);
+        return authenticationService.buildAuthenticationResponse(user);
     }
 
     @PostMapping("/login")
     public AuthenticationResponse performAuthenticate(@RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {
+        AuthenticationResponse authenticationResponse = authenticationService.login(authenticationRequest);
         cookieService.addUserJwtCookies(response, authenticationRequest.email());
-        return authenticationService.login(authenticationRequest);
+        return authenticationResponse;
     }
 
     @PostMapping("/logout")

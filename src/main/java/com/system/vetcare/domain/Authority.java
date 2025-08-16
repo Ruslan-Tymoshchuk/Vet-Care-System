@@ -6,9 +6,12 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import com.system.vetcare.domain.enums.EAuthority;
 import lombok.*;
 
-@Data
-@Entity
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name = "authorities")
 public class Authority implements GrantedAuthority {
 

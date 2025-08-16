@@ -13,6 +13,11 @@ public class OwnerServiceImpl implements OwnerService {
     private final OwnerRepository ownerRepository;
     
     @Override
+    public Owner save(Owner owner) {
+        return ownerRepository.save(owner);
+    }
+    
+    @Override
     public Owner findByUserId(Integer id) {
        return ownerRepository.findByUserId(id);
     }

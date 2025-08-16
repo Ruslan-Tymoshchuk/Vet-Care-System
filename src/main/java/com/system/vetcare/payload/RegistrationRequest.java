@@ -1,6 +1,6 @@
 package com.system.vetcare.payload;
 
-import java.util.Set;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -10,6 +10,7 @@ public class RegistrationRequest {
     private final String lastName;
     private final String email;
     private final String password;
-    private final Set<String> roleNames;
+    private final String legalCertificateId;
+    private final List<Integer> authorityIds;
     
 }

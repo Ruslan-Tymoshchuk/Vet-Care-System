@@ -11,7 +11,12 @@ import lombok.RequiredArgsConstructor;
 public class VeterinarianServiceImpl implements VeterinarianService {
 
     private final VeterinarianRepository veterinarianRepository;
-    
+
+    @Override
+    public Veterinarian save(Veterinarian veterinarian) {
+        return veterinarianRepository.save(veterinarian);
+    }
+
     @Override
     public Veterinarian findByUserId(Integer id) {
         return veterinarianRepository.findByUserId(id);

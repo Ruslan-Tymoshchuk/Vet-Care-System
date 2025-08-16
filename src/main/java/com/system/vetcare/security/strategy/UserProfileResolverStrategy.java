@@ -1,0 +1,15 @@
+package com.system.vetcare.security.strategy;
+
+import com.system.vetcare.domain.User;
+import com.system.vetcare.domain.enums.EAuthority;
+import com.system.vetcare.security.payload.UserProfileDetails;
+
+public interface UserProfileResolverStrategy {
+
+    EAuthority getSupportedAuthority();
+    
+    UserProfileDetails resolveUserProfileDetails(Integer userId);
+
+    void saveProfileForUser(User user);
+    
+}

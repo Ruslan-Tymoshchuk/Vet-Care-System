@@ -13,7 +13,12 @@ public class ManagerServiceImpl implements ManagerService {
     private final ManagerRepository managerRepository;
     
     @Override
-    public Manager findByUserId(Integer id) {
+    public Manager save(Manager manager) {
+        return managerRepository.save(manager);
+    }
+    
+    @Override
+    public Manager findByUserId(Integer id) {  
         return managerRepository.findByUserId(id);
     }
 

@@ -4,6 +4,8 @@ import com.system.vetcare.domain.Owner;
 
 public interface OwnerService {
 
+    Owner save(Owner owner);
+    
     Owner findByUserId(Integer id);
 
 }

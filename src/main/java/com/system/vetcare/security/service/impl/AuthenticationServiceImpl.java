@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.security.payload.AuthenticationRequest;
 import com.system.vetcare.security.payload.AuthenticationResponse;
-import com.system.vetcare.security.payload.UserAuthorityDetails;
+import com.system.vetcare.security.payload.UserProfileDetails;
 import com.system.vetcare.security.service.AuthenticationService;
-import com.system.vetcare.security.strategy.AuthorityResolver;
+import com.system.vetcare.security.strategy.UserProfileResolver;
 import com.system.vetcare.service.JwtService;
 import com.system.vetcare.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +50,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final Map<String, Integer> failedAttempts = new HashMap<>();
     private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();   
-    private final AuthorityResolver authorityResolver;
+    private final UserProfileResolver authorityResolver;
+    
+    @Override
+    public AuthenticationResponse buildAuthenticationResponse(User user) {
+        List<UserProfileDetails> userAuthorities = authorityResolver.resolveUserProfiles(user);          
+        return new AuthenticationResponse(user.getEmail(), user.getLastLogin().format(TIME_FORMATTER), userAuthorities);
+    }
     
     @Override
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
         User user = validateCredentials(authenticationRequest);
-        List<UserAuthorityDetails> userAuthorities = authorityResolver.resolveAllAuthorities(user);
         user = userService.updateLoginTimestamp(user);
-        return new AuthenticationResponse(user.getEmail(), user.getLastLogin().format(TIME_FORMATTER), userAuthorities);
+        return buildAuthenticationResponse(user);
     }
     
     private User validateCredentials(AuthenticationRequest authenticationRequest) {
@@ -75,7 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 }
                 throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
             } else {
-                failedAttempts.put(user.getUsername(), 0);
+                failedAttempts.put(user.getUsername(), 0);  
                 return (User) user;
             }
         } else {
