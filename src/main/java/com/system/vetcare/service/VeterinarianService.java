@@ -8,4 +8,6 @@ public interface VeterinarianService {
     
     Veterinarian findByUserId(Integer id);
 
+    Veterinarian findById(Integer id);
+
 }

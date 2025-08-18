@@ -8,4 +8,6 @@ public interface ManagerService {
     
     Manager findByUserId(Integer id);
 
+    Manager findById(Integer id);
+
 }

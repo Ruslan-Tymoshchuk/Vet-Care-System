@@ -8,4 +8,6 @@ public interface OwnerService {
     
     Owner findByUserId(Integer id);
 
+    Owner findById(Integer id);
+
 }
