@@ -1,12 +1,15 @@
 package com.system.vetcare.service;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import com.system.vetcare.domain.User;
 
 public interface CookiesService {
 
-    Cookie buildCookie(String cookieName, String cookieValue, Integer cookieLifeTime);
+    String buildCookie(String cookieName, String cookieValue, Integer cookieLifeTime);
 
-    void addUserJwtCookies(HttpServletResponse response, String email);
+    HttpHeaders revokeJwtCookies(Cookie[] cookies);
+
+    HttpHeaders issueJwtCookies(User user);
 
 }
