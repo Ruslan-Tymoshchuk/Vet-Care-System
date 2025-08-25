@@ -13,12 +13,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.system.vetcare.domain.enums.EGender;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import lombok.Data;
-
-@Data
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "pets")
 public class Pet {
@@ -32,7 +38,7 @@ public class Pet {
     private Owner owner;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "veterinarian_id", nullable = false)
+    @JoinColumn(name = "veterinarian_id", nullable = true)
     private Veterinarian veterinarian;
 
     @Column(name = "birth_date")
