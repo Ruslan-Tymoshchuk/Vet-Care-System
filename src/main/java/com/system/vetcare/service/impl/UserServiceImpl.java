@@ -53,9 +53,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateLoginTimestamp(User user) {
+    public void updateLoginTimestamp(User user) {
         user.setLastLogin(now());
-        return user;
     }
    
 }

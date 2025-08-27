@@ -8,6 +8,6 @@ public interface UserService extends UserDetailsService {
     
     User save(RegistrationRequest registerRequest);
 
-    User updateLoginTimestamp(User user);
+    void updateLoginTimestamp(User user);
     
 }
