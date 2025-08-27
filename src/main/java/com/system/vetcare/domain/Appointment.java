@@ -15,9 +15,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import com.system.vetcare.domain.enums.EAppointmentStatus;
 import com.system.vetcare.domain.enums.EAppointmentType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "appointments")
 public class Appointment {
