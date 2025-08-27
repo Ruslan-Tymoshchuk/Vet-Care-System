@@ -1,12 +1,10 @@
 package com.system.vetcare.payload;
 
-import lombok.Data;
-
-@Data
-public class PetDetailsRequest {
-
-    private String birthDate;
-    private String gender;
-    private String nickName;
-   
+public record PetDetailsRequest(
+        Integer id,
+        Integer ownerId,
+        Integer veterinarianId,
+        String birthDate, 
+        String gender, 
+        String nickName) {
 }
