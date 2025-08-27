@@ -32,12 +32,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository
                 .save(User
                         .builder()
-                        .firstName(registrationRequest.getFirstName())
-                        .lastName(registrationRequest.getLastName())
-                        .email(registrationRequest.getEmail())
-                        .password(passwordEncoder.encode(registrationRequest.getPassword()))
-                        .legalCertificateId(registrationRequest.getLegalCertificateId())
-                        .authorities(authorityService.findAllById(registrationRequest.getAuthorityIds()))
+                        .firstName(registrationRequest.firstName())
+                        .lastName(registrationRequest.lastName())
+                        .email(registrationRequest.email())
+                        .password(passwordEncoder.encode(registrationRequest.password()))
+                        .legalCertificateId(registrationRequest.legalCertificateId())
+                        .authorities(authorityService.findAllById(registrationRequest.authorityIds()))
                         .accountNonLocked(true)
                         .lastLogin(now())
                         .build()); 
