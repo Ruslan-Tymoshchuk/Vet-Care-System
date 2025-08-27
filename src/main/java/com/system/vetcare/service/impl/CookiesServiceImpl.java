@@ -4,11 +4,15 @@ import static com.system.vetcare.payload.JwtMarkers.ACCESS_TOKEN;
 import static com.system.vetcare.payload.JwtMarkers.BEARER_TOKEN_TYPE;
 import static com.system.vetcare.payload.JwtMarkers.REFRESH_TOKEN;
 import static java.lang.String.format;
+import static java.net.URLDecoder.decode;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 import static org.springframework.util.StringUtils.startsWithIgnoreCase;
+import static java.util.Collections.emptyMap;
+import java.util.Map;
 import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -37,13 +41,13 @@ public class CookiesServiceImpl implements CookiesService {
     private final JwtService jwtService;
     
     @Override
-    public String buildCookie(String cookieName, String cookieValue, Integer cookieLifeTime) {  
-        return ResponseCookie.from(cookieName, encode(cookieValue, UTF_8))
+    public String buildCookie(String name, String value, Integer lifeTime) {  
+        return ResponseCookie.from(name, encode(value, UTF_8))
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(LIMIT_THE_SCOPE)
                 .path(ABSOLUTE_PATH)
-                .maxAge(cookieLifeTime)
+                .maxAge(lifeTime)
                 .build()
                 .toString();
     }  
@@ -64,18 +68,30 @@ public class CookiesServiceImpl implements CookiesService {
     @Override
     public HttpHeaders revokeJwtCookies(Cookie[] cookies) {
         HttpHeaders headers = new HttpHeaders();
-        stream(cookies).forEach(cookie -> {
-            if (cookie.getName().equals(ACCESS_TOKEN) || cookie.getName().equals(REFRESH_TOKEN)
-                    && startsWithIgnoreCase(cookie.getValue(), BEARER_TOKEN_TYPE)) {
-                jwtService.addTokenToBlacklist(cookie.getValue().substring(7));
-                headers.add(SET_COOKIE, clearCookie(cookie));
-            }
+        extractJwtTokens(cookies).forEach((name, value) -> {
+            jwtService.addTokenToBlacklist(value);
+            headers.add(SET_COOKIE, clearCookie(name)); 
         });
         return headers;
     }
     
-    private String clearCookie(Cookie cookie) {   
-        return buildCookie(cookie.getName(), EMPTY_DELIMITER, 0);
+    @Override
+    public Map<String, String> extractJwtTokens(Cookie[] cookies) {
+        if (cookies != null) {
+            return stream(cookies)
+                    .filter(cookie -> (cookie.getName().equals(ACCESS_TOKEN) || cookie.getName().equals(REFRESH_TOKEN))
+                            && startsWithIgnoreCase(cookie.getValue(), BEARER_TOKEN_TYPE))
+                    .map(cookie -> {
+                        final String jwtToken = decode(cookie.getValue().substring(7), UTF_8);
+                        return Map.entry(cookie.getName(), jwtToken);
+                    }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+        } else {
+            return emptyMap();
+        }
+    }
+    
+    private String clearCookie(String name) {   
+        return buildCookie(name, EMPTY_DELIMITER, 0);
     }
  
 }

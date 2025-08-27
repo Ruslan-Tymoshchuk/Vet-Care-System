@@ -25,5 +25,5 @@ public class AuthorityServiceImpl implements AuthorityService {
     public List<Authority> findAllById(List<Integer> authorityIds) {
         return authorityRepository.findAllById(authorityIds);
     }
-    
+
 }

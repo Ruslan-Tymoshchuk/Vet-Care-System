@@ -2,23 +2,16 @@ package com.system.vetcare.security.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.springframework.util.StringUtils.startsWithIgnoreCase;
-import static org.springframework.web.util.WebUtils.getCookie;
-import static com.system.vetcare.payload.JwtMarkers.ACCESS_TOKEN;
-import static com.system.vetcare.payload.JwtMarkers.BEARER_TOKEN_TYPE;
-import static com.system.vetcare.payload.JwtMarkers.REFRESH_TOKEN;
 import static java.lang.String.format;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.system.vetcare.domain.User;
@@ -27,7 +20,6 @@ import com.system.vetcare.security.payload.AuthenticationResponse;
 import com.system.vetcare.security.payload.UserProfileDetails;
 import com.system.vetcare.security.service.AuthenticationService;
 import com.system.vetcare.security.strategy.UserProfileResolver;
-import com.system.vetcare.service.JwtService;
 import com.system.vetcare.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -46,7 +38,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${max.failed.attempts}")
     private int maxFailedAttempts;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private final UserService userService;
     private final Map<String, Integer> failedAttempts = new HashMap<>();
     private final Map<String, LocalDateTime> accountlockTime = new HashMap<>();   
@@ -59,45 +50,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     
     @Override
-    public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
-        User user = validateCredentials(authenticationRequest);
-        user = userService.updateLoginTimestamp(user);
-        return buildAuthenticationResponse(user);
-    }
-    
-    private User validateCredentials(AuthenticationRequest authenticationRequest) {
-        UserDetails user = userService.loadUserByUsername(authenticationRequest.email()); 
-        if (user.isAccountNonLocked()) {
-            if (accountlockTime.containsKey(user.getUsername()) && accountlockTime.get(user.getUsername()).isAfter(now())) {
-                throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS, maxFailedAttempts,
-                        MINUTES.between(now(), accountlockTime.get(user.getUsername())) % 60));
-            }
-            if (!passwordEncoder.matches(authenticationRequest.password(), user.getPassword())) {
-                int actualFailedAttempts = failedAttempts.merge(user.getUsername(), 1, Integer::sum);
-                if (failedAttempts.get(user.getUsername()) == maxFailedAttempts) {
-                    accountlockTime.put(user.getUsername(), now().plusMinutes(lockDurationMinutes));
-                    failedAttempts.put(user.getUsername(), 0);
-                }
-                throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
-            } else {
-                failedAttempts.put(user.getUsername(), 0);  
-                return (User) user;
-            }
+    public User resolvePrincipal(AuthenticationRequest credential) {
+        User principal = (User) userService.loadUserByUsername(credential.email());
+        if (principal.isAccountNonLocked()) {
+            validateCredentials(credential, principal);
         } else {
             throw new LockedException(ACCOUNT_HAS_BEEN_LOCKED);
         }    
+        return principal;
     }
     
     @Override
-    public void logout(HttpServletRequest request) {
-        Cookie accessToken = getCookie(request, ACCESS_TOKEN);
-        Cookie refreshToken = getCookie(request, REFRESH_TOKEN);
-        if (accessToken != null && refreshToken != null
-                && startsWithIgnoreCase(accessToken.getValue(), BEARER_TOKEN_TYPE)
-                && startsWithIgnoreCase(refreshToken.getValue(), BEARER_TOKEN_TYPE)) {
-            jwtService.addTokenToBlacklist(accessToken.getValue().substring(7));
-            jwtService.addTokenToBlacklist(refreshToken.getValue().substring(7));
+    public void revokePrincipalAuthentication() {
+        SecurityContextHolder.clearContext();
+    }
+    
+    private void validateCredentials(AuthenticationRequest credential, User principal) {
+        if (accountlockTime.containsKey(principal.getUsername()) && accountlockTime.get(principal.getUsername()).isAfter(now())) {
+            throw new LockedException(format(ACCOUNT_HAS_BEEN_LOCKED_DUE_TO_FAILED_ATTEMPTS, maxFailedAttempts,
+                    MINUTES.between(now(), accountlockTime.get(principal.getUsername())) % 60));
+        }
+        if (!passwordEncoder.matches(credential.password(), principal.getPassword())) {
+            int actualFailedAttempts = failedAttempts.merge(principal.getUsername(), 1, Integer::sum);
+            if (failedAttempts.get(principal.getUsername()) == maxFailedAttempts) {
+                accountlockTime.put(principal.getUsername(), now().plusMinutes(lockDurationMinutes));
+                failedAttempts.put(principal.getUsername(), 0);
+            }
+            throw new BadCredentialsException(format(INCORRECT_PASSWORD, actualFailedAttempts));
+        } else {
+            failedAttempts.put(principal.getUsername(), 0);  
+            userService.updateLoginTimestamp(principal); 
         }
     }
- 
+    
 }

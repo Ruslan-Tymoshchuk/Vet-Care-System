@@ -21,14 +21,14 @@ public class UserProfileResolver {
 
     public List<UserProfileDetails> resolveUserProfiles(User user) {
         return user.getAuthorities().stream().map(authority -> {
-            UserProfileResolverStrategy strategy = strategies.get(authority.getTitle());
+            UserProfileResolverStrategy strategy = strategies.get(EAuthority.valueOf(authority.getAuthority()));
             return strategy.resolveUserProfileDetails(user.getId());
         }).toList();
     }
 
     public void saveUserProfiles(User user) {
         user.getAuthorities().forEach(authority -> {
-            UserProfileResolverStrategy strategy = strategies.get(authority.getTitle());
+            UserProfileResolverStrategy strategy = strategies.get(EAuthority.valueOf(authority.getAuthority()));
             strategy.saveProfileForUser(user);
         });
     }
