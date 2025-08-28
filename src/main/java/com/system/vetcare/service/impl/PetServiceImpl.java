@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.system.vetcare.domain.Pet;
 import com.system.vetcare.domain.enums.EGender;
 import com.system.vetcare.exception.EntityNotFoundException;
-import com.system.vetcare.mapstruct.PetMapper;
 import com.system.vetcare.payload.request.PetDetailsRequest;
 import com.system.vetcare.payload.response.PetDetailsResponse;
 import com.system.vetcare.repository.PetRepository;
@@ -28,24 +27,23 @@ public class PetServiceImpl implements PetService {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String PET_WITH_ID_NOT_FOUND = "Pet with [id: %s] not found.";
 
-    private final PetMapper petMapper;
     private final PetRepository petRepository;
     private final OwnerService ownerService;
     private final VeterinarianService veterinarianService;
 
     @Override
     public List<PetDetailsResponse> findAll() {
-        return petRepository.findAll().stream().map(petMapper::petToPetDetailsResponse).toList();
+        return petRepository.findAll().stream().map(this::toDto).toList();
     }
 
     @Override
     public List<PetDetailsResponse> findAllByOwnerId(Integer ownerId) {
-        return petRepository.findByOwner(ownerId).stream().map(petMapper::petToPetDetailsResponse).toList();
+        return petRepository.findByOwner(ownerId).stream().map(this::toDto).toList();
     }
     
     @Override
     public List<PetDetailsResponse> findAllByVeterinarianId(Integer veterinarianId) {
-        return petRepository.findByVeterinarian(veterinarianId).stream().map(petMapper::petToPetDetailsResponse)
+        return petRepository.findByVeterinarian(veterinarianId).stream().map(pet -> toDto(pet))
                 .toList();
     }
 
@@ -58,15 +56,15 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public PetDetailsResponse findById(Integer id) {
-        return petMapper.petToPetDetailsResponse(petRepository.findById(id)
+        return toDto(petRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find animal with id: " + id)));
     }
 
     @Override
     @Transactional
-    public PetDetailsResponse updateAnimal(PetDetailsRequest animalDetails, Integer animalId, String userEmail) {
-        Pet animal = petMapper.petDetailsToPet(animalDetails, animalId);
-        return petMapper.petToPetDetailsResponse(petRepository.save(animal));
+    public PetDetailsResponse updatePet(PetDetailsRequest petDetailsRequest) {
+        Pet pet = toEntity(petDetailsRequest);
+        return toDto(petRepository.save(pet));
     }
 
     @Override

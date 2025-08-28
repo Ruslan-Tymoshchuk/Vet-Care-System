@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,11 +72,12 @@ public class PetController {
 
     @Secured({ OWNER })
     @PatchMapping(URL_PETS_ID)
-    public ResponseEntity<Void> updateAnimal(@PathVariable("id") Integer animalId,
-            @RequestBody PetDetailsRequest petDetailsRequest,
-            @AuthenticationPrincipal(expression = "username") String userEmail) {
-        petService.updateAnimal(petDetailsRequest, animalId, userEmail);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> updatePet(@PathVariable("id") Integer animalId,
+            @RequestBody PetDetailsRequest petDetailsRequest) {
+        petService.updatePet(petDetailsRequest);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
     
 }
