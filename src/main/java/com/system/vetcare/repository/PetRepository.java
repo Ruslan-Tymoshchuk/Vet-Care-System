@@ -13,5 +13,8 @@ public interface PetRepository extends JpaRepository<Pet, Integer>{
 
     @Query(value = "SELECT P FROM Pet P WHERE P.owner.id = :ownerId")
     Set<Pet> findByOwner(Integer ownerId);
+
+    @Query(value = "SELECT P FROM Pet P WHERE P.veterinarian.id = :veterinarianId")
+    Set<Pet> findByVeterinarian(Integer veterinarianId);
     
 }

@@ -13,12 +13,12 @@ public interface PetService {
     
     List<PetDetailsResponse> findAllByOwnerId(Integer ownerId);
     
+    List<PetDetailsResponse> findAllByVeterinarianId(Integer veterinarianId);
+    
     PetDetailsResponse findById(Integer id);
     
     PetDetailsResponse updateAnimal(PetDetailsRequest animalDetailsRequest, Integer animalId,  String userEmail);
     
     void deleteAnimalById(Integer id);
 
-   
-  
 }

@@ -42,6 +42,12 @@ public class PetServiceImpl implements PetService {
     public List<PetDetailsResponse> findAllByOwnerId(Integer ownerId) {
         return petRepository.findByOwner(ownerId).stream().map(petMapper::petToPetDetailsResponse).toList();
     }
+    
+    @Override
+    public List<PetDetailsResponse> findAllByVeterinarianId(Integer veterinarianId) {
+        return petRepository.findByVeterinarian(veterinarianId).stream().map(petMapper::petToPetDetailsResponse)
+                .toList();
+    }
 
     @Override
     @Transactional

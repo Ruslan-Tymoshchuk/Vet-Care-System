@@ -28,6 +28,7 @@ public class PetController {
     public static final String URL_PETS = "/api/v1/pets";
     public static final String URL_PETS_ID = "/api/v1/pets/{id}";
     public static final String URL_PETS_OWNER_ID = "/api/v1/pets/owner/{owner-id}";
+    public static final String URL_PETS_VETERINARIAN_ID = "/api/v1/pets/veterinarian/{veterinarian-id}";
     
     private final PetService petService;
     private final PetAssembler animalAssembler;
@@ -52,6 +53,14 @@ public class PetController {
             @PathVariable("owner-id") Integer ownerId) {
         return ResponseEntity
                 .ok(petService.findAllByOwnerId(ownerId).stream().map(animalAssembler::toModel).toList());
+    }
+    
+    @Secured({ VETERINARIAN })
+    @GetMapping(URL_PETS_VETERINARIAN_ID)
+    public ResponseEntity<List<EntityModel<PetDetailsResponse>>> findAllByVeterinarian(
+            @PathVariable("veterinarian-id") Integer veterinarianId) {
+        return ResponseEntity
+                .ok(petService.findAllByVeterinarianId(veterinarianId).stream().map(animalAssembler::toModel).toList());
     }
 
     @Secured({ OWNER })
