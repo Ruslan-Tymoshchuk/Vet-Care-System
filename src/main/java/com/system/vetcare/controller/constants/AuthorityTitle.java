@@ -1,4 +1,4 @@
-package com.system.vetcare.security.constants;
+package com.system.vetcare.controller.constants;
 
 public final class AuthorityTitle {
 

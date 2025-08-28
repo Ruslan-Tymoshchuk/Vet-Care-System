@@ -1,6 +1,6 @@
 package com.system.vetcare.controller;
 
-import static com.system.vetcare.security.constants.AuthorityTitle.*;
+import static com.system.vetcare.controller.constants.AuthorityTitle.*;
 import static org.springframework.http.HttpStatus.*;
 import java.util.List;
 import org.springframework.hateoas.EntityModel;
