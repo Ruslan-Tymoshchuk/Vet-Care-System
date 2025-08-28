@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.system.vetcare.controller.assembler.PetAssembler;
-import com.system.vetcare.payload.PetDetailsRequest;
-import com.system.vetcare.payload.PetDetailsResponse;
+import com.system.vetcare.payload.request.PetDetailsRequest;
+import com.system.vetcare.payload.response.PetDetailsResponse;
 import com.system.vetcare.service.PetService;
 import lombok.RequiredArgsConstructor;
 

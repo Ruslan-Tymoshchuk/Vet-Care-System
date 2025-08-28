@@ -1,8 +1,9 @@
 package com.system.vetcare.service;
 
 import java.util.List;
-import com.system.vetcare.payload.PetDetailsRequest;
-import com.system.vetcare.payload.PetDetailsResponse;
+
+import com.system.vetcare.payload.request.PetDetailsRequest;
+import com.system.vetcare.payload.response.PetDetailsResponse;
 
 public interface PetService {
 

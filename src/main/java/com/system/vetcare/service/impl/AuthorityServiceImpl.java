@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Authority;
-import com.system.vetcare.payload.AuthorityDetailsResponse;
+import com.system.vetcare.payload.response.AuthorityDetailsResponse;
 import com.system.vetcare.repository.AuthorityRepository;
 import com.system.vetcare.service.AuthorityService;
 

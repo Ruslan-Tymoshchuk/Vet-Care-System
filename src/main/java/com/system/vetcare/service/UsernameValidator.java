@@ -1,7 +1,7 @@
 package com.system.vetcare.service;
 
-import com.system.vetcare.payload.UserEmailValidationRequest;
-import com.system.vetcare.payload.UserEmailValidationResponse;
+import com.system.vetcare.payload.request.UserEmailValidationRequest;
+import com.system.vetcare.payload.response.UserEmailValidationResponse;
 
 public interface UsernameValidator {
 

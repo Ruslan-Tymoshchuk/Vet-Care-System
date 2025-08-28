@@ -6,7 +6,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import com.system.vetcare.controller.PetController;
-import com.system.vetcare.payload.PetDetailsResponse;
+import com.system.vetcare.payload.response.PetDetailsResponse;
 
 @Component
 public class PetAssembler implements RepresentationModelAssembler<PetDetailsResponse, EntityModel<PetDetailsResponse>> {

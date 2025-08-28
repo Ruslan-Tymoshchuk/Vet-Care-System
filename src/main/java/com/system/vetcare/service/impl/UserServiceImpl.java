@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.system.vetcare.domain.User;
-import com.system.vetcare.payload.RegistrationRequest;
+import com.system.vetcare.payload.request.RegistrationRequest;
 import com.system.vetcare.repository.UserRepository;
 import com.system.vetcare.security.strategy.UserProfileResolver;
 import com.system.vetcare.service.AuthorityService;

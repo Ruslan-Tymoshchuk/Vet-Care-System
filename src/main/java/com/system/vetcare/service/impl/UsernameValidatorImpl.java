@@ -2,8 +2,8 @@ package com.system.vetcare.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.system.vetcare.payload.UserEmailValidationRequest;
-import com.system.vetcare.payload.UserEmailValidationResponse;
+import com.system.vetcare.payload.request.UserEmailValidationRequest;
+import com.system.vetcare.payload.response.UserEmailValidationResponse;
 import com.system.vetcare.repository.UserRepository;
 import com.system.vetcare.service.UsernameValidator;
 

@@ -2,8 +2,8 @@ package com.system.vetcare.mapstruct;
 
 import org.mapstruct.Mapper;
 import com.system.vetcare.domain.Pet;
-import com.system.vetcare.payload.PetDetailsRequest;
-import com.system.vetcare.payload.PetDetailsResponse;
+import com.system.vetcare.payload.request.PetDetailsRequest;
+import com.system.vetcare.payload.response.PetDetailsResponse;
 
 @Mapper(componentModel = "spring")
 public interface PetMapper {

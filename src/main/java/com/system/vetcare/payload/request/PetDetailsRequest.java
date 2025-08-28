@@ -1,4 +1,4 @@
-package com.system.vetcare.payload;
+package com.system.vetcare.payload.request;
 
 public record PetDetailsRequest(
         Integer id,

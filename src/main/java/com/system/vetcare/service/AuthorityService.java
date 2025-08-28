@@ -2,7 +2,7 @@ package com.system.vetcare.service;
 
 import java.util.List;
 import com.system.vetcare.domain.Authority;
-import com.system.vetcare.payload.AuthorityDetailsResponse;
+import com.system.vetcare.payload.response.AuthorityDetailsResponse;
 
 public interface AuthorityService {
 

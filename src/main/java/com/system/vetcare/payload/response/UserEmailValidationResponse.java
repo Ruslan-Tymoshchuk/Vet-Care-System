@@ -1,4 +1,4 @@
-package com.system.vetcare.payload;
+package com.system.vetcare.payload.response;
 
 import lombok.Builder;
 import lombok.Data;
