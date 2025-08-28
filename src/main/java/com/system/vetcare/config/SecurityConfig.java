@@ -1,4 +1,4 @@
-package com.system.vetcare.security.config;
+package com.system.vetcare.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

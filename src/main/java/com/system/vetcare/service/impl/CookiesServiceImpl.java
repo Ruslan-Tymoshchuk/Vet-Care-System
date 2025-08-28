@@ -12,6 +12,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 import static java.util.Collections.emptyMap;
+import static java.util.Objects.nonNull;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +78,7 @@ public class CookiesServiceImpl implements CookiesService {
     
     @Override
     public Map<String, String> extractJwtTokens(Cookie[] cookies) {
-        if (cookies != null) {
+        if (nonNull(cookies)) {
             return stream(cookies)
                     .filter(cookie -> (cookie.getName().equals(ACCESS_TOKEN) || cookie.getName().equals(REFRESH_TOKEN))
                             && startsWithIgnoreCase(cookie.getValue(), BEARER_TOKEN_TYPE))
