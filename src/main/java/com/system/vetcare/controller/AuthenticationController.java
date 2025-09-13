@@ -1,11 +1,13 @@
-package com.system.vetcare.security.controller;
+package com.system.vetcare.controller;
 
 import static org.springframework.http.HttpStatus.*;
+import static com.system.vetcare.controller.constants.AuthenticationUrl.*;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.payload.request.RegistrationRequest;
@@ -21,19 +23,15 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(MAIN_PATH)
 public class AuthenticationController {
 
-    public static final String URL_NEW_USER_REGISTRATION = "/api/v1/auth/registration";
-    public static final String URL_USER_LOGIN = "/api/v1/auth/login";
-    public static final String URL_USER_LOGOUT = "/api/v1/auth/logout";
-    public static final String URL_VALIDATE_EMAIL = "/api/v1/auth/validate_email";
-    
     private final UserService userService;
     private final CookiesService cookieService;
     private final UsernameValidator usernameValidator;
     private final AuthenticationService authenticationService;
 
-    @PostMapping(URL_NEW_USER_REGISTRATION)
+    @PostMapping(USER_REGISTRATION)
     public ResponseEntity<AuthenticationResponse> performRegistration(
             @RequestBody RegistrationRequest registrationRequest) {
         User user = userService.save(registrationRequest);
@@ -45,9 +43,8 @@ public class AuthenticationController {
                 .body(authenticationResponse);
     }
 
-    @PostMapping(URL_USER_LOGIN)
-    public ResponseEntity<AuthenticationResponse> performLogIn(@RequestBody AuthenticationRequest credential,
-            HttpServletRequest request) {
+    @PostMapping(USER_LOGIN)
+    public ResponseEntity<AuthenticationResponse> performLogIn(@RequestBody AuthenticationRequest credential) {
         User user = authenticationService.resolvePrincipal(credential);
         AuthenticationResponse authenticationResponse = authenticationService.buildAuthenticationResponse(user);
         HttpHeaders headers = cookieService.issueJwtCookies(user);
@@ -56,7 +53,7 @@ public class AuthenticationController {
                 .body(authenticationResponse);
     }
 
-    @PostMapping(URL_USER_LOGOUT)
+    @PostMapping(USER_LOGOUT)
     public ResponseEntity<Void> performLogOut(HttpServletRequest request) {
         authenticationService.revokePrincipalAuthentication();
         HttpHeaders headers = cookieService.revokeJwtCookies(request.getCookies());
@@ -66,7 +63,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping(URL_VALIDATE_EMAIL)
+    @PostMapping(VALIDATE_EMAIL)
     public ResponseEntity<UserEmailValidationResponse> validateUserEmail(
             @RequestBody UserEmailValidationRequest userEmailValidationRequest) {
         return ResponseEntity.ok(usernameValidator.usernameIsAlreadyTaken(userEmailValidationRequest));

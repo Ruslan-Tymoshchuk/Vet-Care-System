@@ -24,10 +24,10 @@ public class SecurityConfig {
                    .anonymous().disable()
                    .addFilterBefore(jwtAuthFilter, FilterSecurityInterceptor.class)
                    .authorizeHttpRequests()
-                   .antMatchers("/api/v1/auth/login").permitAll()
+                   .antMatchers("/api/v1/authentication/login").permitAll()
                    .antMatchers("/api/v1/authorities/all").permitAll()
-                   .antMatchers("/api/v1/auth/registration").permitAll()
-                   .antMatchers("/api/v1/auth/validate_email").permitAll()
+                   .antMatchers("/api/v1/authentication/registration").permitAll()
+                   .antMatchers("/api/v1/authentication/validate_email").permitAll()
                    .anyRequest()
                    .authenticated();
         return http.build();
