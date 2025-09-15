@@ -1,4 +1,4 @@
-package com.system.vetcare.security.filter;
+package com.system.vetcare.controller.filter;
 
 import static com.system.vetcare.payload.JwtMarkers.*;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		Map<String, String> jwtTokens = cookiesService.extractJwtTokens(request.getCookies());
 		if (jwtTokens.containsKey(ACCESS_TOKEN)) {
 			final String jwtAccessToken = jwtTokens.get(ACCESS_TOKEN);
-			if (!jwtService.isTokenBlacklisted(jwtAccessToken)) {
+			if (!jwtService.tokenIsBlacklisted(jwtAccessToken)) {
 				final String email = jwtService.parse(jwtAccessToken).getSubject();
 				if (!email.isBlank() && SecurityContextHolder.getContext().getAuthentication() == null) {
 					User user = (User) userDetailsService.loadUserByUsername(email);
