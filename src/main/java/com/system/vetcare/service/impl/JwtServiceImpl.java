@@ -5,9 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
 import com.system.vetcare.service.JwtService;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +16,7 @@ import static io.jsonwebtoken.security.Keys.*;
 
 @Component
 public class JwtServiceImpl implements JwtService {
-
+	
     public static final Key SECRET_KEY = secretKeyFor(SignatureAlgorithm.HS256);
     
     private final Set<String> tokenBlackList = new HashSet<>();
@@ -34,9 +32,9 @@ public class JwtServiceImpl implements JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
     }
-        
+    
     @Override
-    public boolean isTokenBlacklisted(String token) {
+    public boolean tokenIsBlacklisted(String token) {
         return tokenBlackList.contains(token);
     }
     
@@ -46,11 +44,12 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Claims parseToken(String token) {
+    public Claims parse(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
+    
 }

@@ -15,19 +15,19 @@ import com.system.vetcare.payload.request.UserEmailValidationRequest;
 import com.system.vetcare.payload.response.UserEmailValidationResponse;
 import com.system.vetcare.security.payload.AuthenticationRequest;
 import com.system.vetcare.security.payload.AuthenticationResponse;
-import com.system.vetcare.security.service.AuthenticationService;
-import com.system.vetcare.service.CookiesService;
+import com.system.vetcare.service.AuthenticationService;
+import com.system.vetcare.service.JwtCookiesService;
 import com.system.vetcare.service.UserService;
 import com.system.vetcare.service.UsernameValidator;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(MAIN_PATH)
+@RequestMapping(SECURITY_API_PATH)
 public class AuthenticationController {
 
     private final UserService userService;
-    private final CookiesService cookieService;
+    private final JwtCookiesService jwtCookiesService;
     private final UsernameValidator usernameValidator;
     private final AuthenticationService authenticationService;
 
@@ -35,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> performRegistration(
             @RequestBody RegistrationRequest registrationRequest) {
         User user = userService.save(registrationRequest);
-        HttpHeaders headers = cookieService.issueJwtCookies(user);
+        HttpHeaders headers = jwtCookiesService.issueJwtCookies(user.getEmail());
         AuthenticationResponse authenticationResponse = authenticationService.buildAuthenticationResponse(user);
         return ResponseEntity
                 .status(CREATED)
@@ -47,16 +47,24 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> performLogIn(@RequestBody AuthenticationRequest credential) {
         User user = authenticationService.resolvePrincipal(credential);
         AuthenticationResponse authenticationResponse = authenticationService.buildAuthenticationResponse(user);
-        HttpHeaders headers = cookieService.issueJwtCookies(user);
+        HttpHeaders headers = jwtCookiesService.issueJwtCookies(user.getEmail());
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(authenticationResponse);
+    }
+    
+    @PostMapping(REFRESH_JWT_TOKEN)
+    public ResponseEntity<Void> performRefreshToken(HttpServletRequest request) {
+        HttpHeaders headers = jwtCookiesService.refreshJwtCookies(request.getCookies());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .build();
     }
 
     @PostMapping(USER_LOGOUT)
     public ResponseEntity<Void> performLogOut(HttpServletRequest request) {
         authenticationService.revokePrincipalAuthentication();
-        HttpHeaders headers = cookieService.revokeJwtCookies(request.getCookies());
+        HttpHeaders headers = jwtCookiesService.revokeJwtCookies(request.getCookies());
         return ResponseEntity
                 .status(NO_CONTENT)
                 .headers(headers)

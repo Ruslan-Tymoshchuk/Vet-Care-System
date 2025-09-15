@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import com.system.vetcare.security.filter.JwtAuthenticationFilter;
+import com.system.vetcare.controller.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -24,10 +24,11 @@ public class SecurityConfig {
                    .anonymous().disable()
                    .addFilterBefore(jwtAuthFilter, FilterSecurityInterceptor.class)
                    .authorizeHttpRequests()
-                   .antMatchers("/api/v1/authentication/login").permitAll()
+                   .antMatchers("/security-api/v1/login").permitAll()
+                   .antMatchers("/security-api/v1/registration").permitAll()
+                   .antMatchers("/security-api/v1/refresh").permitAll()
+                   .antMatchers("/security-api/v1/validate_email").permitAll()
                    .antMatchers("/api/v1/authorities/all").permitAll()
-                   .antMatchers("/api/v1/authentication/registration").permitAll()
-                   .antMatchers("/api/v1/authentication/validate_email").permitAll()
                    .anyRequest()
                    .authenticated();
         return http.build();

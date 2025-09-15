@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import com.system.vetcare.domain.User;
-import com.system.vetcare.service.CookiesService;
+import com.system.vetcare.service.JwtCookiesService;
 import com.system.vetcare.service.JwtService;
 import io.jsonwebtoken.JwtException;
 
@@ -26,7 +26,7 @@ import io.jsonwebtoken.JwtException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final CookiesService cookiesService;
+    private final JwtCookiesService cookiesService;
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
