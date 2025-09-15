@@ -1,4 +1,4 @@
-package com.system.vetcare.security.service;
+package com.system.vetcare.service;
 
 import com.system.vetcare.domain.User;
 import com.system.vetcare.security.payload.AuthenticationRequest;

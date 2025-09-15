@@ -1,4 +1,4 @@
-package com.system.vetcare.security.service.impl;
+package com.system.vetcare.service.impl;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -18,8 +18,8 @@ import com.system.vetcare.domain.User;
 import com.system.vetcare.security.payload.AuthenticationRequest;
 import com.system.vetcare.security.payload.AuthenticationResponse;
 import com.system.vetcare.security.payload.UserProfileDetails;
-import com.system.vetcare.security.service.AuthenticationService;
 import com.system.vetcare.security.strategy.UserProfileResolver;
+import com.system.vetcare.service.AuthenticationService;
 import com.system.vetcare.service.UserService;
 import lombok.RequiredArgsConstructor;
 
