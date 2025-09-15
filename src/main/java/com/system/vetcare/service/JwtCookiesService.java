@@ -3,15 +3,14 @@ package com.system.vetcare.service;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 import org.springframework.http.HttpHeaders;
-import com.system.vetcare.domain.User;
 
-public interface CookiesService {
+public interface JwtCookiesService {
 
-    String buildCookie(String cookieName, String cookieValue, Integer cookieLifeTime);
+	HttpHeaders issueJwtCookies(String email);
+	
+	HttpHeaders refreshJwtCookies(Cookie[] cookies);
 
     HttpHeaders revokeJwtCookies(Cookie[] cookies);
-
-    HttpHeaders issueJwtCookies(User user);
 
     Map<String, String> extractJwtTokens(Cookie[] cookies);
 
