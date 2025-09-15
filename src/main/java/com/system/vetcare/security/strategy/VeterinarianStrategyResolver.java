@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.domain.Veterinarian;
 import com.system.vetcare.domain.enums.EAuthority;
-import com.system.vetcare.security.payload.UserProfileDetails;
+import com.system.vetcare.payload.response.UserProfileDetails;
 import com.system.vetcare.service.VeterinarianService;
 import lombok.RequiredArgsConstructor;
 

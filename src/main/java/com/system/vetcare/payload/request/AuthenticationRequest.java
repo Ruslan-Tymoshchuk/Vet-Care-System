@@ -1,4 +1,4 @@
-package com.system.vetcare.security.payload;
+package com.system.vetcare.payload.request;
 
 public record AuthenticationRequest(
         String email,

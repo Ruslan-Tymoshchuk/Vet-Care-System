@@ -1,4 +1,4 @@
-package com.system.vetcare.security.payload;
+package com.system.vetcare.payload.response;
 
 import java.util.*;
 

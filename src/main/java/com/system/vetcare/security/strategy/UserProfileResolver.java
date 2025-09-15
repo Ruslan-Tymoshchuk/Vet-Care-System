@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.domain.enums.EAuthority;
-import com.system.vetcare.security.payload.UserProfileDetails;
+import com.system.vetcare.payload.response.UserProfileDetails;
 
 @Service
 public class UserProfileResolver {
