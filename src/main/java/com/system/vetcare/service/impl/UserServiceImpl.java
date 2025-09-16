@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.payload.request.RegistrationRequest;
 import com.system.vetcare.repository.UserRepository;
-import com.system.vetcare.security.strategy.UserProfileResolver;
 import com.system.vetcare.service.AuthorityService;
 import com.system.vetcare.service.UserService;
+import com.system.vetcare.service.strategy.UserProfileResolver;
+
 import lombok.RequiredArgsConstructor;
 
 @Service

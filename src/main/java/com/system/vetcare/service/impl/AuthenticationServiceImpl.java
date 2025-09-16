@@ -18,9 +18,10 @@ import com.system.vetcare.domain.User;
 import com.system.vetcare.payload.request.AuthenticationRequest;
 import com.system.vetcare.payload.response.AuthenticationResponse;
 import com.system.vetcare.payload.response.UserProfileDetails;
-import com.system.vetcare.security.strategy.UserProfileResolver;
 import com.system.vetcare.service.AuthenticationService;
 import com.system.vetcare.service.UserService;
+import com.system.vetcare.service.strategy.UserProfileResolver;
+
 import lombok.RequiredArgsConstructor;
 
 @Component

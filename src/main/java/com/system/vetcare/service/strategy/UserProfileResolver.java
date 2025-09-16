@@ -1,4 +1,4 @@
-package com.system.vetcare.security.strategy;
+package com.system.vetcare.service.strategy;
 
 import static java.util.stream.Collectors.toMap;
 import static java.util.function.Function.identity;

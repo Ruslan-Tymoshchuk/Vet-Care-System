@@ -1,4 +1,4 @@
-package com.system.vetcare.security.strategy;
+package com.system.vetcare.service.strategy;
 
 import static com.system.vetcare.domain.enums.EAuthority.VETERINARIAN;
 import org.springframework.stereotype.Service;
