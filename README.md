@@ -2,18 +2,28 @@
 
 # A system for managing veterinary clinic operations, including appointments, veterinarians, pet owners, and medical records
 
-Explanation:
+🔐 Authentication & Security (JWT)
 
-Non-registered user has the opportunity to check, this email is available for registration 
+Non-registered users can check if an email is available for registration.
 
-After registration the user are authorized, in one request
+Registration and authorization are combined into a single request.
 
-The user, which successfully authorized, receives access and refresh tokens in a cookies
- 
-Once the access token expires, the user will be asked to issue a new token pair using a valid refresh token
+Successfully authorized users receive access and refresh tokens stored in cookies.
 
-The user has 10 attempts to enter an incorrect password, or - block for 1 hour
+Once the access token expires, users can issue a new token pair using a valid refresh token.
 
-Authorized user gets full access to their pets
+Up to 10 incorrect password attempts are allowed before the account is locked for 1 hour.
+
+🐾 Pet Owner
+
+Add a pet to the owner’s list of pets.
+
+View detailed information about a pet.
+
+Update specific pet information fields.
 
 *****
+
+# This product is provided for demonstration purposes only, as part of my portfolio for Java developer positions
+
+# You may, downolad, extract and run it without restrictions
