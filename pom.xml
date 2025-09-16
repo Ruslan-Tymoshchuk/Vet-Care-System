@@ -10,15 +10,15 @@
     <version>2.7.7</version>
   </parent>
 
-  <groupId>com.manager.animallist</groupId>
-  <artifactId>animal-list-management-service</artifactId>
-  <version>0.0.2</version>
-  <name>animal-list-management-service</name>
+  <groupId>com.system.vetcare</groupId>
+  <artifactId>vet-care-system</artifactId>
+  <version>0.0.3</version>
+  <name>vet-care-system</name>
 
   <properties>
     <java.version>17</java.version>
     <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
-    <lombok.version>1.18.26</lombok.version>
+    <lombok.version>1.18.38</lombok.version>
     <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
   </properties>
 

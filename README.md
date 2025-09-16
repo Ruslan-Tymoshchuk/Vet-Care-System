@@ -1,25 +1,29 @@
-# Animal-List-Management-Service
+# Vet-Care-System
 
-Explanation:
+# A system for managing veterinary clinic operations, including appointments, veterinarians, pet owners, and medical records
 
-Non-registered user has the opportunity to check, this email is available for registration 
+🔐 Authentication & Security (JWT)
 
-After registration the user are authorized, in one request
+Non-registered users can check if an email is available for registration.
 
-The user, which successfully authorized, receives access and refresh tokens in a cookies
- 
-Once the access token has expired, the user automatically receives a new token pair
+Registration and authorization are combined into a single request.
 
-The user has 10 attempts to enter an incorrect password, or - block for 1 hour
+Successfully authorized users receive access and refresh tokens stored in cookies.
 
-Authorized user gets full access to their animals
+Once the access token expires, users can issue a new token pair using a valid refresh token.
+
+Up to 10 incorrect password attempts are allowed before the account is locked for 1 hour.
+
+🐾 Pet Owner
+
+Add a pet to the owner’s list of pets.
+
+View detailed information about a pet.
+
+Update specific pet information fields.
 
 *****
 
-In this solution used MapStruct mapper and Maven build tool
+# This product is provided for demonstration purposes only, as part of my portfolio for Java developer positions
 
-So, crucial step before starting, is used mvn clean and mvn install commands
-
-That'll make necessary beans implementations for mapper
-
-So, let's run it
+# You may, downolad, extract and run it without restrictions
