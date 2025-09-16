@@ -71,9 +71,8 @@ public class PetController {
     }
 
     @Secured({ OWNER })
-    @PatchMapping(URL_PETS_ID)
-    public ResponseEntity<Void> updatePet(@PathVariable("id") Integer animalId,
-            @RequestBody PetDetailsRequest petDetailsRequest) {
+    @PatchMapping(URL_PETS)
+    public ResponseEntity<Void> updatePet(@RequestBody PetDetailsRequest petDetailsRequest) {
         petService.updatePet(petDetailsRequest);
         return ResponseEntity
                 .noContent()
