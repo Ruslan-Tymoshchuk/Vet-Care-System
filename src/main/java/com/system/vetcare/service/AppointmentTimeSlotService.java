@@ -1,0 +1,10 @@
+package com.system.vetcare.service;
+
+import java.util.List;
+import com.system.vetcare.payload.response.AppointmentTimeSlotResponse;
+
+public interface AppointmentTimeSlotService {
+
+	List<AppointmentTimeSlotResponse> findAll();
+
+}
