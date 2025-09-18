@@ -1,7 +1,9 @@
 package com.system.vetcare.controller;
 
+import static com.system.vetcare.controller.constants.AuthorityTitle.*;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.system.vetcare.payload.response.AppointmentTimeSlotResponse;
@@ -16,6 +18,7 @@ public class AppointmentTimeSlotController {
 
 	private final AppointmentTimeSlotService timeSlotService;
 
+	@Secured({ OWNER, MANAGER })
 	@GetMapping(URL_TIMESLOTS_ALL)
 	public ResponseEntity<List<AppointmentTimeSlotResponse>> findAll() {
 		return ResponseEntity
