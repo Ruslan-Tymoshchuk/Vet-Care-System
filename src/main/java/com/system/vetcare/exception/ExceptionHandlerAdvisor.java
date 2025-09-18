@@ -1,11 +1,10 @@
-package com.system.vetcare.controller;
+package com.system.vetcare.exception;
 
 import static java.time.LocalDateTime.*;
 import static org.springframework.http.HttpStatus.*;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.system.vetcare.exception.ExceptionHandlerResponse;
 import io.jsonwebtoken.JwtException;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
