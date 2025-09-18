@@ -3,7 +3,7 @@ package com.system.vetcare.controller.constants;
 public final class AuthenticationUrl {
 
 	public static final String ABSOLUTE_API_PATH = "/";
-	public static final String SECURITY_API_PATH = "/security-api/v1";
+	public static final String SECURITY_API_PATH = "/api/v1/security";
 	public static final String USER_REGISTRATION = "/registration";
 	public static final String USER_LOGIN = "/login";
 	public static final String USER_LOGOUT = "/logout";
