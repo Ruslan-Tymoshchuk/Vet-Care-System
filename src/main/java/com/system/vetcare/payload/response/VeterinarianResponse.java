@@ -6,5 +6,5 @@ public record VeterinarianResponse(
         String lastName,
         String phone,
         String seniorityLevel,
-        Integer totalExperience) {
+        String totalExperience) {
 }
