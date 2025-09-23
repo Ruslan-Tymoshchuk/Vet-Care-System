@@ -22,6 +22,8 @@ View detailed information about a pet.
 
 Update specific pet information fields.
 
+View all available veterinarians in the system.
+
 *****
 
 # This product is provided for demonstration purposes only, as part of my portfolio for Java developer positions
