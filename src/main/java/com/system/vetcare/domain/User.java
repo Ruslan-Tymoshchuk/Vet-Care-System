@@ -45,6 +45,8 @@ public class User implements UserDetails {
 
     private String password;
     
+    private String phone;
+    
     @Column(name = "legal_certificate_id")
     private String legalCertificateId;
     
