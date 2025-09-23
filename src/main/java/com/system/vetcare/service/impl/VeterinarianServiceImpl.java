@@ -24,7 +24,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
 
     @Override
     public List<VeterinarianResponse> findAll() {
-        return veterinarianRepository.findAll().stream().map(veterinarian -> toDto(veterinarian)).toList();
+        return veterinarianRepository.findAll().stream().map(this::toDto).toList();
     }
 
     @Override

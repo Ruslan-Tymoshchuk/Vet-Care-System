@@ -21,7 +21,8 @@ public class VeterinarianController {
     @Secured({ MANAGER, OWNER })
     @GetMapping(URL_VETERINARIANS)
     public ResponseEntity<List<VeterinarianResponse>> findAll() {
-        return ResponseEntity.ok(veterinarianService.findAll());
+        return ResponseEntity
+                 .ok(veterinarianService.findAll());
     }
 
 }
