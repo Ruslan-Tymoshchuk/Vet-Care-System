@@ -1,9 +1,12 @@
 package com.system.vetcare.service.impl;
 
 import static java.lang.String.format;
+import static  java.util.Objects.nonNull;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Veterinarian;
 import com.system.vetcare.exception.EntityNotFoundException;
+import com.system.vetcare.payload.response.VeterinarianResponse;
 import com.system.vetcare.repository.VeterinarianRepository;
 import com.system.vetcare.service.VeterinarianService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +15,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VeterinarianServiceImpl implements VeterinarianService {
 
+    public static final String YEARS_AND_MOTHS_FORMAT = "Years: %s Months: %s";
+    public static final String THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION = "The experience is not present";
     public static final String VETERINARIAN_WITH_USER_ID_NOT_FOUND = "Veterinarian with [user id: %s] not found.";
     public static final String VETERINARIAN_WITH_ID_NOT_FOUND = "Veterinarian with [id: %s] not found.";
 
     private final VeterinarianRepository veterinarianRepository;
+
+    @Override
+    public List<VeterinarianResponse> findAll() {
+        return veterinarianRepository.findAll().stream().map(this::toDto).toList();
+    }
 
     @Override
     public Veterinarian save(Veterinarian veterinarian) {
@@ -32,6 +42,23 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     public Veterinarian findById(Integer id) {
         return veterinarianRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format(VETERINARIAN_WITH_ID_NOT_FOUND, id)));
+    }
+
+    private VeterinarianResponse toDto(Veterinarian veterinarian) {
+        return new VeterinarianResponse(veterinarian.getId(), veterinarian.getUser().getFirstName(),
+                veterinarian.getUser().getLastName(), veterinarian.getUser().getPhone(),
+                veterinarian.getSeniorityLevel().name(),
+                convertExperienceToYearsAndMonths(veterinarian.getTotalMonthsOfExperience()));
+    }
+
+    private String convertExperienceToYearsAndMonths(Integer totalMonthsOfExperience) {
+        if (nonNull(totalMonthsOfExperience)) {
+            Integer years = totalMonthsOfExperience / 12;
+            Integer months = totalMonthsOfExperience % 12;
+            return format(YEARS_AND_MOTHS_FORMAT, years, months);
+        } else {
+            return THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION;
+        }
     }
 
 }
