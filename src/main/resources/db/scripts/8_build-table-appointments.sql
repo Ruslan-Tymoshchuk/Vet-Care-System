@@ -5,8 +5,8 @@ CREATE TABLE appointments (
     pet_id INTEGER NOT NULL REFERENCES pets(id),
     visit_date DATE,
     time_slot_id INTEGER REFERENCES appointment_time_slots(id),
-    room VARCHAR NOT NULL,
+    room VARCHAR,
+    reason VARCHAR NOT NULL,
     type_of_visit VARCHAR,
-    status VARCHAR NOT NULL,
-    reason VARCHAR NOT NULL
+    status VARCHAR NOT NULL
 );

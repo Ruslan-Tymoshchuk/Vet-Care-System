@@ -5,7 +5,6 @@ import static java.util.Objects.nonNull;
 import static java.time.LocalDate.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.system.vetcare.domain.Pet;
@@ -43,7 +42,7 @@ public class PetServiceImpl implements PetService {
     
     @Override
     public List<PetDetailsResponse> findAllByVeterinarianId(Integer veterinarianId) {
-        return petRepository.findByVeterinarian(veterinarianId).stream().map(pet -> toDto(pet))
+        return petRepository.findByVeterinarian(veterinarianId).stream().map(this::toDto)
                 .toList();
     }
 
@@ -55,9 +54,15 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDetailsResponse findById(Integer id) {
+    public PetDetailsResponse findDetailsById(Integer id) {
         return toDto(petRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Could not find animal with id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException(format(PET_WITH_ID_NOT_FOUND, id))));
+    }
+    
+    @Override
+    public Pet findById(Integer id) {
+        return petRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format(PET_WITH_ID_NOT_FOUND, id)));
     }
 
     @Override
@@ -73,7 +78,7 @@ public class PetServiceImpl implements PetService {
         if (petRepository.existsById(id)) {
             petRepository.deleteById(id);
         } else {
-            throw new NoSuchElementException("Could not find animal with id: " + id);
+            throw new EntityNotFoundException(format(PET_WITH_ID_NOT_FOUND, id));
         }
     }
 

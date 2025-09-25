@@ -55,6 +55,8 @@ public class Appointment {
     
     private String room;
     
+    private String reason;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "type_of_visit")
     private EAppointmentType typeOfVisit;

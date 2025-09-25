@@ -7,5 +7,6 @@ public record AppointmentRequest(
 		Integer veterinarianId,
 		String visitDate,
 		Integer timeSlotId,
+		String room,
 		String reason) {
 }
