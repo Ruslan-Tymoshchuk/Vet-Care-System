@@ -36,7 +36,7 @@ public class PetController {
     @GetMapping(URL_PETS_ID)
     public ResponseEntity<EntityModel<PetDetailsResponse>> findById(@PathVariable("id") Integer id) {
         return ResponseEntity
-                .ok(animalAssembler.toModel(petService.findById(id)));
+                .ok(animalAssembler.toModel(petService.findDetailsById(id)));
     }
     
     @Secured({ MANAGER })

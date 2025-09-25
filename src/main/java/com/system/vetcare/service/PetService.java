@@ -1,6 +1,7 @@
 package com.system.vetcare.service;
 
 import java.util.List;
+import com.system.vetcare.domain.Pet;
 import com.system.vetcare.payload.request.PetDetailsRequest;
 import com.system.vetcare.payload.response.PetDetailsResponse;
 
@@ -14,7 +15,9 @@ public interface PetService {
     
     List<PetDetailsResponse> findAllByVeterinarianId(Integer veterinarianId);
     
-    PetDetailsResponse findById(Integer id);
+    PetDetailsResponse findDetailsById(Integer id);
+    
+    Pet findById(Integer id);
     
     PetDetailsResponse updatePet(PetDetailsRequest petDetailsRequest);
     
