@@ -1,19 +1,15 @@
 package com.system.vetcare.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.CascadeType.ALL;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import com.system.vetcare.domain.enums.EVetSeniorityLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,21 +26,17 @@ import lombok.Setter;
 public class Veterinarian {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Integer id;
     
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-    
-    @Column(name = "total_months_of_experience")
-    private Integer totalMonthsOfExperience;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "seniority_level")
-    private EVetSeniorityLevel seniorityLevel;
+    @OneToOne(cascade = ALL)
+    @JoinColumn(name = "staff_id", referencedColumnName = "id")
+    private Staff staff;
     
     @OneToMany(mappedBy = "veterinarian")
     private Set<Pet> pets;
+    
+    @OneToMany(mappedBy = "veterinarian")
+    private Set<Appointment> appointments;
     
 }

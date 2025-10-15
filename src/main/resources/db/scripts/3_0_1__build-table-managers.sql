@@ -1,4 +1,4 @@
 CREATE TABLE managers (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id)
+    staff_id INTEGER NOT NULL REFERENCES staffs(id)
 );

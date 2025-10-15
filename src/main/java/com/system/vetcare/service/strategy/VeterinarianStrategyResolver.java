@@ -2,6 +2,7 @@ package com.system.vetcare.service.strategy;
 
 import static com.system.vetcare.domain.enums.EAuthority.VETERINARIAN;
 import org.springframework.stereotype.Service;
+import com.system.vetcare.domain.Staff;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.domain.Veterinarian;
 import com.system.vetcare.domain.enums.EAuthority;
@@ -30,7 +31,10 @@ public class VeterinarianStrategyResolver implements UserProfileResolverStrategy
     public void saveProfileForUser(User user) {
         veterinarianService.save(Veterinarian
                                    .builder()
-                                   .user(user)
+                                   .staff(Staff
+                                           .builder()
+                                           .user(user)
+                                           .build())
                                    .build());
     }
 

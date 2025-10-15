@@ -12,19 +12,25 @@ VALUES ('MANAGER'),
        ('OWNER'),
        ('VETERINARIAN');
        
-INSERT INTO managers (user_id) VALUES (3), (4), (5);       
-       
-INSERT INTO owners (user_id) VALUES (1);
-
-INSERT INTO veterinarians (user_id, total_months_of_experience, seniority_level) VALUES (2, 32, 'SENIOR');
-       
 INSERT INTO user_authorities (user_id, authority_id)
 VALUES (1, 2),
        (2, 3),
        (3, 1),
        (4, 1),
-       (5, 1);
+       (5, 1);       
        
+INSERT INTO owners (user_id) VALUES (1);       
+       
+INSERT INTO staffs (user_id, total_months_of_experience, education_level) 
+VALUES (2, 32, 'MASTER'), 
+       (3, 32, 'BACHELOR'), 
+       (4, 40, 'MASTER'), 
+       (5, 55, 'DOCTORATE');  
+
+INSERT INTO veterinarians (staff_id) VALUES (1);       
+       
+INSERT INTO managers (staff_id) VALUES (2), (3), (4);       
+            
 INSERT INTO pets (owner_id, veterinarian_id, birth_date, gender, nickname) 
 VALUES (1, 1, '2018-07-10', 'FEMALE', 'Tagira'), 
        (1, 1, '2019-07-10', 'FEMALE', 'TRIXIE'), 

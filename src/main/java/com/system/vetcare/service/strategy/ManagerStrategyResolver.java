@@ -3,6 +3,7 @@ package com.system.vetcare.service.strategy;
 import static com.system.vetcare.domain.enums.EAuthority.MANAGER;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Manager;
+import com.system.vetcare.domain.Staff;
 import com.system.vetcare.domain.User;
 import com.system.vetcare.domain.enums.EAuthority;
 import com.system.vetcare.payload.response.UserProfileDetails;
@@ -30,7 +31,10 @@ public class ManagerStrategyResolver implements UserProfileResolverStrategy {
     public void saveProfileForUser(User user) {
         managerService.save(Manager
                               .builder()
-                              .user(user)
+                              .staff(Staff
+                                       .builder()
+                                       .user(user)
+                                       .build())
                               .build());
     }
 

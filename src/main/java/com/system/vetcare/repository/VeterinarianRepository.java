@@ -6,6 +6,6 @@ import com.system.vetcare.domain.Veterinarian;
 
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, Integer>{
 
-    Optional<Veterinarian> findByUserId(Integer id);
+    Optional<Veterinarian> findByStaff_UserId(Integer id);
 
 }

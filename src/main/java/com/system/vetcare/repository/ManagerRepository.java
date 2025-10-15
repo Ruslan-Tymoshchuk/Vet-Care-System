@@ -8,6 +8,6 @@ import com.system.vetcare.domain.Manager;
 @Repository
 public interface ManagerRepository extends JpaRepository<Manager, Integer>{
 
-    Optional<Manager> findByUserId(Integer id);
+    Optional<Manager> findByStaff_UserId(Integer id);
 
 }

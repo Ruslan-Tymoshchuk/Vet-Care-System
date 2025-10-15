@@ -34,7 +34,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
 
     @Override
     public Veterinarian findByUserId(Integer id) {
-        return veterinarianRepository.findByUserId(id)
+        return veterinarianRepository.findByStaff_UserId(id)
                 .orElseThrow(() -> new EntityNotFoundException(format(VETERINARIAN_WITH_USER_ID_NOT_FOUND, id)));
     }
 
@@ -45,10 +45,10 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     }
 
     private VeterinarianResponse toDto(Veterinarian veterinarian) {
-        return new VeterinarianResponse(veterinarian.getId(), veterinarian.getUser().getFirstName(),
-                veterinarian.getUser().getLastName(), veterinarian.getUser().getPhone(),
-                veterinarian.getSeniorityLevel().name(),
-                convertExperienceToYearsAndMonths(veterinarian.getTotalMonthsOfExperience()));
+        return new VeterinarianResponse(veterinarian.getId(), veterinarian.getStaff().getUser().getFirstName(),
+                veterinarian.getStaff().getUser().getLastName(), veterinarian.getStaff().getUser().getPhone(),
+                veterinarian.getStaff().getEducationLevel().name(),
+                convertExperienceToYearsAndMonths(veterinarian.getStaff().getTotalMonthsOfExperience()));
     }
 
     private String convertExperienceToYearsAndMonths(Integer totalMonthsOfExperience) {
