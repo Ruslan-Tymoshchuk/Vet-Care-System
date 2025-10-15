@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.system.vetcare.domain.enums.ELeaveType;
 import lombok.Getter;
@@ -24,6 +26,10 @@ public class Leave {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Integer id;
+    
+    @ManyToOne
+    @JoinColumn(name = "staff_id", referencedColumnName = "id", nullable = false)
+    private Staff staff;
     
     @Column(name = "begin_date")
     private LocalDate beginDate;

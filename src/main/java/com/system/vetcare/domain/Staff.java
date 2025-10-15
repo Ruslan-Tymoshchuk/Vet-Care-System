@@ -1,14 +1,15 @@
 package com.system.vetcare.domain;
 
-import javax.persistence.CascadeType;
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.EnumType.STRING;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import com.system.vetcare.domain.enums.EEducation;
@@ -28,18 +29,20 @@ import lombok.Setter;
 public class Staff {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Integer id;
     
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(cascade = ALL)
     private User user;
     
     @Column(name = "total_months_of_experience")
     private Integer totalMonthsOfExperience;
     
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     @Column(name = "education_level")
     private EEducation educationLevel;
+    
+    @OneToMany(mappedBy = "staff")
+    private Set<Leave> leaves;
     
 }
