@@ -5,6 +5,6 @@ public record VeterinarianResponse(
         String firstName,
         String lastName,
         String phone,
-        String seniorityLevel,
+        String educationLevel,
         String totalExperience) {
 }
