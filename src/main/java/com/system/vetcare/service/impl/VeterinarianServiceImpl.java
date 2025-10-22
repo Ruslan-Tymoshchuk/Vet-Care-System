@@ -1,7 +1,6 @@
 package com.system.vetcare.service.impl;
 
 import static java.lang.String.format;
-import static  java.util.Objects.nonNull;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Veterinarian;
@@ -24,7 +23,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
 
     @Override
     public List<VeterinarianResponse> findAll() {
-        return veterinarianRepository.findAll().stream().map(this::toDto).toList();
+        return veterinarianRepository.findAll().stream().map(VeterinarianResponse::new).toList();
     }
 
     @Override
@@ -42,23 +41,6 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     public Veterinarian findById(Integer id) {
         return veterinarianRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format(VETERINARIAN_WITH_ID_NOT_FOUND, id)));
-    }
-
-    private VeterinarianResponse toDto(Veterinarian veterinarian) {
-        return new VeterinarianResponse(veterinarian.getId(), veterinarian.getStaff().getUser().getFirstName(),
-                veterinarian.getStaff().getUser().getLastName(), veterinarian.getStaff().getUser().getPhone(),
-                veterinarian.getStaff().getEducationLevel().name(),
-                convertExperienceToYearsAndMonths(veterinarian.getStaff().getTotalMonthsOfExperience()));
-    }
-
-    private String convertExperienceToYearsAndMonths(Integer totalMonthsOfExperience) {
-        if (nonNull(totalMonthsOfExperience)) {
-            Integer years = totalMonthsOfExperience / 12;
-            Integer months = totalMonthsOfExperience % 12;
-            return format(YEARS_AND_MOTHS_FORMAT, years, months);
-        } else {
-            return THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION;
-        }
     }
 
 }
