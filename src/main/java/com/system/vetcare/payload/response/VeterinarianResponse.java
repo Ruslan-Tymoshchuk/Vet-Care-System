@@ -8,16 +8,16 @@ import lombok.Getter;
 @Getter
 public class VeterinarianResponse {
        
+    public static final String YEARS_AND_MONTHS_FORMAT = "Years: %s Months: %s";
+    public static final String THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION = "The experience is not present";
+    
     private final Integer id;
     private final String firstName;
     private final String lastName;
     private final String phone; 
     private final String educationLevel;
     private final String totalExperience;
-    
-    public static final String YEARS_AND_MOTHS_FORMAT = "Years: %s Months: %s";
-    public static final String THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION = "The experience is not present";
-    
+     
     public VeterinarianResponse(Veterinarian veterinarian) {
         this.id = veterinarian.getId();
         this.firstName = veterinarian.getStaff().getUser().getFirstName();
@@ -33,7 +33,7 @@ public class VeterinarianResponse {
         if (nonNull(totalMonthsOfExperience)) {
             Integer years = totalMonthsOfExperience / 12;
             Integer months = totalMonthsOfExperience % 12;
-            return format(YEARS_AND_MOTHS_FORMAT, years, months);
+            return format(YEARS_AND_MONTHS_FORMAT, years, months);
         } else {
             return THE_EXPERIENCE_IS_NOT_PRESENT_NOTIFICATION;
         }
