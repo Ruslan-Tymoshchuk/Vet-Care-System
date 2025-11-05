@@ -1,16 +1,18 @@
 package com.system.vetcare.service.impl;
 
+import static java.util.stream.Collectors.toSet;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Leave;
 import com.system.vetcare.repository.LeaveRepository;
-import com.system.vetcare.service.LeavesService;
+import com.system.vetcare.service.LeaveService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class LeavesServiceImpl implements LeavesService {
+public class LeaveServiceImpl implements LeaveService {
 
     private final LeaveRepository leaveRepository;
     
@@ -19,4 +21,10 @@ public class LeavesServiceImpl implements LeavesService {
         return leaveRepository.findAllInDateInterval(staffId, start, end);
     }
 
+    @Override
+    public Set<LocalDate> extractAbsentDays(List<Leave> leaves) {
+        return leaves.stream().flatMap(leave -> leave.getBeginDate().datesUntil(leave.getCompleteDate().plusDays(1)))
+                .collect(toSet());
+    }
+    
 }
