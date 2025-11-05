@@ -18,11 +18,11 @@ public class AppointmentTimeSlotController {
 
 	private final AppointmentTimeSlotService timeSlotService;
 
-	@Secured({ OWNER, MANAGER })
-	@GetMapping(URL_TIMESLOTS_ALL)
-	public ResponseEntity<List<AppointmentTimeSlotResponse>> findAll() {
-		return ResponseEntity
-			     .ok(timeSlotService.findAll());
-	}
+	@Secured({ MANAGER })
+    @GetMapping(URL_TIMESLOTS_ALL)
+    public ResponseEntity<List<AppointmentTimeSlotResponse>> findAll() {
+        return ResponseEntity
+                 .ok(timeSlotService.findAll());
+    }
 
 }
