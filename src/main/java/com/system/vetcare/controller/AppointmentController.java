@@ -27,5 +27,5 @@ public class AppointmentController {
                  .status(CREATED)
                  .body(appointmentService.save(appointmentRequest));
     }
-
+ 
 }

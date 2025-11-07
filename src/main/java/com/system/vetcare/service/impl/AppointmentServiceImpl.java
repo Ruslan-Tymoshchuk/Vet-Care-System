@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import com.system.vetcare.domain.Appointment;
 import com.system.vetcare.domain.enums.EAppointmentStatus;
@@ -38,7 +39,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setStatus(EAppointmentStatus.BOOKED);
         return toDto(appointmentRepository.save(appointment));
     }
-
+    
+    @Override
+    public List<Appointment> findByVeterinarianInDateInterval(Integer id, LocalDate beginDate,
+            LocalDate completeDate) {
+        return appointmentRepository.findByVeterinarianInDateInterval(id, completeDate, beginDate);
+    }
+    
     private Appointment toEntity(AppointmentRequest appointmentRequest) {
         Integer id = appointmentRequest.id();
         Appointment appointment = Appointment
