@@ -11,10 +11,11 @@ public interface AppointmentTimeSlotService {
 
     AppointmentTimeSlot findById(Integer timeSlotId);
 
-    List<AppointmentTimeSlotResponse> findAll();
+    List<AppointmentTimeSlot> findAll();
     
     Map<LocalDate, List<AppointmentTimeSlot>> extractBusyTimeSlots(List<Appointment> appointments);
     
-    List<AppointmentTimeSlotResponse> buildTimeSlotsAvailability(List<AppointmentTimeSlot> busyTimeSlots);
+    List<AppointmentTimeSlotResponse> buildTimeSlotsAvailability(List<AppointmentTimeSlot> allTimeSlots,
+            List<AppointmentTimeSlot> busyTimeSlots);
 
 }

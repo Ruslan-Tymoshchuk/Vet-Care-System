@@ -25,11 +25,10 @@ public class AppointmentTimeSlotServiceImpl implements AppointmentTimeSlotServic
     private final AppointmentTimeSlotRepository appointmentTimeSlotRepository;
 
     @Override
-    public List<AppointmentTimeSlotResponse> findAll() {
-        return appointmentTimeSlotRepository.findAll().stream()
-                .map(appointmentTimeSlot -> new AppointmentTimeSlotResponse(appointmentTimeSlot, true)).toList();
+    public List<AppointmentTimeSlot> findAll() {
+        return appointmentTimeSlotRepository.findAll();
     }
-    
+
     @Override
     public AppointmentTimeSlot findById(Integer id) {
         return appointmentTimeSlotRepository.findById(id)
@@ -41,13 +40,12 @@ public class AppointmentTimeSlotServiceImpl implements AppointmentTimeSlotServic
         return appointments.stream()
                 .collect(groupingBy(Appointment::getVisitDate, mapping(Appointment::getTimeSlot, toList())));
     }
-    
+
     @Override
-    public List<AppointmentTimeSlotResponse> buildTimeSlotsAvailability(List<AppointmentTimeSlot> busyTimeSlots) {
-        return appointmentTimeSlotRepository.findAll().stream()
-                .map(appointmentTimeSlot -> new AppointmentTimeSlotResponse(appointmentTimeSlot,
-                        !busyTimeSlots.contains(appointmentTimeSlot)))
-                .toList();
+    public List<AppointmentTimeSlotResponse> buildTimeSlotsAvailability(List<AppointmentTimeSlot> allTimeSlots,
+            List<AppointmentTimeSlot> busyTimeSlots) {
+        return allTimeSlots.stream().map(appointmentTimeSlot -> new AppointmentTimeSlotResponse(appointmentTimeSlot,
+                !busyTimeSlots.contains(appointmentTimeSlot))).toList();
     }
 
 }
