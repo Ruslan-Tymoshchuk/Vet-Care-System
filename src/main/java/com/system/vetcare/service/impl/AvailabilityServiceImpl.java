@@ -34,9 +34,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         List<AppointmentTimeSlot> allTimeSlots = appointmentTimeSlotService.findAll();
         return beginDate.datesUntil(completeDate.plusDays(1)).map(day -> {
             if (absentDays.contains(day)) {
-                return new AvailableDateResponse(day.toString(), false, emptyList());
+                return new AvailableDateResponse(day, false, emptyList());
             } else {
-                return new AvailableDateResponse(day.toString(), true, appointmentTimeSlotService
+                return new AvailableDateResponse(day, true, appointmentTimeSlotService
                         .buildTimeSlotsAvailability(allTimeSlots, busyTimeSlots.getOrDefault(day, emptyList())));
             }
         }).toList();

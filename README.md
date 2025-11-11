@@ -24,7 +24,13 @@ Update specific pet information fields
 
 View all available veterinarians in the system
 
+View available days and time slots for the selected veterinarian
+
 Schedule a vet appointment
+
+👩‍⚕️ Veterinarian
+
+A staff member is a user who may be absent due to vacation, sickness, or additional leave days
 
 *****
 
