@@ -20,6 +20,7 @@
     <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
     <lombok.version>1.18.38</lombok.version>
     <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+    <de.jollyday.verision>0.5.10</de.jollyday.verision>
   </properties>
 
   <dependencies>
@@ -31,7 +32,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-api</artifactId>
       <version>${jsonwebtoken.version}</version>
@@ -72,6 +73,11 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.jollyday</groupId>
+      <artifactId>jollyday</artifactId>
+      <version>${de.jollyday.verision}</version>
     </dependency>
   </dependencies>
 
