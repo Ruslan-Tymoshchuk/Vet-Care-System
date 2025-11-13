@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import de.jollyday.HolidayCalendar;
 import de.jollyday.HolidayManager;
+import de.jollyday.ManagerParameter;
 import de.jollyday.ManagerParameters;
 
 @Configuration
@@ -14,8 +15,13 @@ public class HolidayConfig {
     private String holidayCalendar;
 
     @Bean
-    public HolidayManager holidayManager() {
-        return HolidayManager.getInstance(ManagerParameters.create(HolidayCalendar.valueOf(holidayCalendar)));
+    public ManagerParameter managerParameter() {
+        return ManagerParameters.create(HolidayCalendar.valueOf(holidayCalendar));
+    }
+    
+    @Bean
+    public HolidayManager holidayManager(ManagerParameter parameters) {
+        return HolidayManager.getInstance(parameters);
     }
 
 }
