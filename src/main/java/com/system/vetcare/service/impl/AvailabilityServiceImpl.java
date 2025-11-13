@@ -13,6 +13,7 @@ import com.system.vetcare.service.AppointmentService;
 import com.system.vetcare.service.AppointmentTimeSlotService;
 import com.system.vetcare.service.AvailabilityService;
 import com.system.vetcare.service.LeaveService;
+import de.jollyday.HolidayManager;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,10 +23,14 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     private final AppointmentService appointmentService;
     private final AppointmentTimeSlotService appointmentTimeSlotService;
     private final LeaveService leaveService;
+    private final HolidayManager holidayManager;
 
     @Override
     public List<AvailableDateResponse> calculateVeterinarianAvailabilitySlots(Integer id, LocalDate beginDate,
-            LocalDate completeDate) {
+            LocalDate completeDate) {    
+        if (beginDate.isAfter(completeDate)) {
+            throw new IllegalArgumentException("End date cannot be before start date");
+        }   
         List<Appointment> appointments = appointmentService.findByVeterinarianInDateInterval(id, beginDate,
                 completeDate);
         Map<LocalDate, List<AppointmentTimeSlot>> busyTimeSlots = appointmentTimeSlotService
@@ -33,7 +38,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         Set<LocalDate> absentDays = leaveService.extractAbsentDays(id, beginDate, completeDate);
         List<AppointmentTimeSlot> allTimeSlots = appointmentTimeSlotService.findAll();
         return beginDate.datesUntil(completeDate.plusDays(1)).map(day -> {
-            if (absentDays.contains(day)) {
+            if (holidayManager.isHoliday(day) || absentDays.contains(day)) {
                 return new AvailableDateResponse(day, false, emptyList());
             } else {
                 return new AvailableDateResponse(day, true, appointmentTimeSlotService
