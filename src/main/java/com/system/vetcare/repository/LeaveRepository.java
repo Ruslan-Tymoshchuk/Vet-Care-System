@@ -11,8 +11,15 @@ import com.system.vetcare.domain.Leave;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Integer> {
 
-    @Query("SELECT l FROM Leave l WHERE l.beginDate <= :completeDate AND l.completeDate >= :beginDate AND l.staff.id = :staffId")
-    List<Leave> findAllInDateInterval(@Param("staffId") Integer staffId, @Param("beginDate") LocalDate beginDate,
-            @Param("completeDate") LocalDate completeDate);
+    @Query("""
+              SELECT l
+              FROM Leave l
+              JOIN Veterinarian v ON v.staff = l.staff
+              WHERE v.id = :veterinarianId
+                AND l.beginDate <= :completeDate
+                AND l.completeDate >= :beginDate
+            """)
+    List<Leave> findByVeterinarianInDateInterval(@Param("veterinarianId") Integer veterinarianId,
+            @Param("beginDate") LocalDate beginDate, @Param("completeDate") LocalDate completeDate);
 
 }
