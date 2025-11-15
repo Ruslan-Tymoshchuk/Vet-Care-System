@@ -35,10 +35,10 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 completeDate);
         Map<LocalDate, List<AppointmentTimeSlot>> busyTimeSlots = appointmentTimeSlotService
                 .extractBusyTimeSlots(appointments);
-        Set<LocalDate> absentDays = leaveService.extractAbsentDays(id, beginDate, completeDate);
+        Set<LocalDate> leaveDays = leaveService.extractVeterinarianLeaveDays(id, beginDate, completeDate);
         List<AppointmentTimeSlot> allTimeSlots = appointmentTimeSlotService.findAll();
         return beginDate.datesUntil(completeDate.plusDays(1)).map(day -> {
-            if (holidayManager.isHoliday(day) || absentDays.contains(day)) {
+            if (holidayManager.isHoliday(day) || leaveDays.contains(day)) {
                 return new AvailableDateResponse(day, false, emptyList());
             } else {
                 return new AvailableDateResponse(day, true, appointmentTimeSlotService
